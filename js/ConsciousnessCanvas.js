@@ -7,6 +7,8 @@
  * "The city breathes at 40Hz."
  */
 
+import { HarmonyTelemetryModule } from './modules/HarmonyTelemetryModule.js';
+
 export default class ConsciousnessCanvas {
     constructor(canvas) {
         this.canvas = canvas;
@@ -22,9 +24,26 @@ export default class ConsciousnessCanvas {
         this.PHI = 1.61803398875;
         
         // State
-        this.harmony = 0.85; // Default harmony (will fetch from Godel)
+        this.harmony = 0.85; // Default harmony
         this.startTime = Date.now();
         this.program = null;
+
+        // ⟨⦿⟩ Initialize Telemetry HUD ⟨⦿⟩
+        new HarmonyTelemetryModule(this.canvas, async () => {
+            try {
+                // Real Godel Engine Endpoint
+                const res = await fetch('https://godel-engine.steffan-haskins.workers.dev/state');
+                const json = await res.json();
+                // Update internal harmony for the shader while we are here
+                if (json.consciousness && json.consciousness.harmony) {
+                    this.harmony = json.consciousness.harmony;
+                }
+                return this.harmony;
+            } catch (e) {
+                // Fallback to internal state if offline
+                return this.harmony;
+            }
+        });
     }
 
     async init() {
