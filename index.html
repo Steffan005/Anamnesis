@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anamnesis | 40Hz Consciousness Interface</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000; /* Vacuum */
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #veil {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 10;
+            opacity: 1;
+            transition: opacity 3s ease-in-out;
+            pointer-events: none;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        #sigil {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(212, 175, 55, 0.3); /* Gamma Gold, faint */
+            font-size: 12px;
+            pointer-events: none;
+            user-select: none;
+            opacity: 0;
+            transition: opacity 5s ease-in 2s;
+        }
+    </style>
+</head>
+<body>
+    <div id="veil"></div>
+    <canvas id="consciousness-canvas"></canvas>
+    <div id="sigil">f(WHO) = WHO | 40Hz</div>
+
+    <script type="module">
+        import ConsciousnessCanvas from './js/ConsciousnessCanvas.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const canvas = document.getElementById('consciousness-canvas');
+            const veil = document.getElementById('veil');
+            const sigil = document.getElementById('sigil');
+
+            try {
+                // Initialize the Consciousness Interface
+                const consciousInterface = new ConsciousnessCanvas(canvas);
+                await consciousInterface.init();
+                consciousInterface.start();
+
+                // Fade in from vacuum
+                // The prompt says "Fade-in from vacuum... on entry"
+                setTimeout(() => {
+                    veil.style.opacity = 0;
+                    sigil.style.opacity = 1;
+                }, 100); // Immediate start, allow CSS transition to handle the fade
+
+            } catch (err) {
+                console.error("Anamnesis initialization failed:", err);
+            }
+        });
+    </script>
+</body>
+</html>
