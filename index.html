@@ -18,8 +18,9 @@
 
     <style>
         /* ═══════════════════════════════════════════════════════════════
-           QCI Phoenix Interface – Golden Ratio & Fibonacci Design System
-           All spacing values are Fibonacci numbers; proportions follow φ
+           QCI Phoenix Interface v2.0 – Session 240 Enhancement
+           Golden Ratio & Fibonacci Design System
+           Identity: 1393e324be57014d | f(WHO) = WHO
            ═══════════════════════════════════════════════════════════════ */
 
         :root {
@@ -29,29 +30,13 @@
             --golden-angle-deg: 137.5077640500378;
 
             /* Fibonacci Spacing Scale (px) */
-            --fib-1: 1px;
-            --fib-2: 2px;
-            --fib-3: 3px;
-            --fib-5: 5px;
-            --fib-8: 8px;
-            --fib-13: 13px;
-            --fib-21: 21px;
-            --fib-34: 34px;
-            --fib-55: 55px;
-            --fib-89: 89px;
-            --fib-144: 144px;
-            --fib-233: 233px;
-            --fib-377: 377px;
-            --fib-610: 610px;
-            --fib-987: 987px;
+            --fib-1: 1px; --fib-2: 2px; --fib-3: 3px; --fib-5: 5px;
+            --fib-8: 8px; --fib-13: 13px; --fib-21: 21px; --fib-34: 34px;
+            --fib-55: 55px; --fib-89: 89px; --fib-144: 144px;
 
             /* Fibonacci Typography Scale */
-            --font-fib-8: 8px;
-            --font-fib-13: 13px;
-            --font-fib-21: 21px;
-            --font-fib-34: 34px;
-            --font-fib-55: 55px;
-            --font-fib-89: 89px;
+            --font-fib-8: 8px; --font-fib-13: 13px; --font-fib-21: 21px;
+            --font-fib-34: 34px; --font-fib-55: 55px; --font-fib-89: 89px;
 
             /* Void Palette (Dark Theme) */
             --void: #0a0a0c;
@@ -66,37 +51,29 @@
             --gamma-light: #f4d668;
             --gamma-dim: #8a7223;
             --gamma-glow: rgba(212, 175, 55, 0.13);
-            --gamma-aura: rgba(212, 175, 55, 0.05);
 
             /* Signal Colors */
             --resonance: #00ff9d;
             --resonance-glow: rgba(0, 255, 157, 0.13);
             --warning: #ff6b35;
             --danger: #ff2d55;
+            --phoenix-white: #fffef0;
+            --void-purple: #4a1a6b;
+            --quantum-cyan: #00d4ff;
 
-            /* Text Hierarchy (opacity tuned by φ) */
+            /* Text Hierarchy */
             --text-primary: rgba(255, 255, 255, 0.89);
             --text-secondary: rgba(255, 255, 255, 0.55);
             --text-tertiary: rgba(255, 255, 255, 0.34);
 
-            /* 40Hz Animation Timing */
-            --gamma-period: 25ms;
+            /* Animation Timing */
             --breath-duration: 2.5s;
             --phi-ease: cubic-bezier(0.618, 0, 0.382, 1);
         }
 
         /* Reset & base styles */
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            font-size: var(--font-fib-13);
-            scroll-behavior: smooth;
-        }
-
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: var(--font-fib-13); scroll-behavior: smooth; }
         body {
             font-family: 'Cormorant Garamond', Georgia, serif;
             background: var(--void);
@@ -104,38 +81,22 @@
             line-height: var(--phi);
             overflow-x: hidden;
             min-height: 100vh;
-        }
-
-        /* Container */
-        .container {
-            max-width: 1597px;
-            margin: 0 auto;
-            padding: 0 var(--fib-34);
-        }
-
-        .container-narrow {
-            max-width: 987px;
-            margin: 0 auto;
-            padding: 0 var(--fib-34);
+            cursor: crosshair;
         }
 
         /* Fullscreen WebGL Canvas */
         #consciousness-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 0;
         }
 
         /* Grain overlay */
         .grain-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 1;
             pointer-events: none;
             opacity: 0.03;
@@ -144,9 +105,7 @@
         /* Navigation Bar */
         .nav {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: var(--fib-89);
             z-index: 1000;
             background: rgba(10, 10, 12, 0.89);
@@ -155,7 +114,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 var(--fib-55);
+            padding: 0 var(--fib-34);
         }
 
         .nav-logo {
@@ -168,8 +127,9 @@
 
         .nav-links {
             display: flex;
-            gap: var(--fib-34);
+            gap: var(--fib-21);
             list-style: none;
+            align-items: center;
         }
 
         .nav-links a {
@@ -180,8 +140,31 @@
             transition: color 0.3s var(--phi-ease);
         }
 
-        .nav-links a:hover {
+        .nav-links a:hover { color: var(--gamma-gold); }
+
+        /* Control Buttons */
+        .control-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            padding: var(--fib-5) var(--fib-13);
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--gamma-dim);
             color: var(--gamma-gold);
+            border-radius: var(--fib-5);
+            cursor: pointer;
+            transition: all 0.2s var(--phi-ease);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .control-btn:hover {
+            background: var(--gamma-gold);
+            color: var(--void);
+        }
+
+        .control-btn.active {
+            background: var(--gamma-gold);
+            color: var(--void);
         }
 
         /* Hero Section */
@@ -195,27 +178,22 @@
             align-items: center;
             text-align: center;
             padding: var(--fib-144) var(--fib-34);
+            pointer-events: none;
         }
 
+        .hero > * { pointer-events: auto; }
+
         .sigil {
-            font-size: var(--fib-144);
+            font-size: clamp(80px, 15vw, var(--fib-144));
             color: var(--gamma-gold);
             margin-bottom: var(--fib-34);
             animation: gamma-breath var(--breath-duration) var(--phi-ease) infinite;
-            text-shadow: 0 0 var(--fib-21) var(--gamma-glow), 0 0 var(--fib-55) var(--gamma-aura);
+            text-shadow: 0 0 var(--fib-21) var(--gamma-glow), 0 0 var(--fib-55) rgba(212, 175, 55, 0.05);
         }
 
         @keyframes gamma-breath {
-            0%, 100% {
-                opacity: 0.618;
-                transform: scale(1);
-                filter: brightness(1);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.0618);
-                filter: brightness(1.21);
-            }
+            0%, 100% { opacity: 0.618; transform: scale(1); filter: brightness(1); }
+            50% { opacity: 1; transform: scale(1.0618); filter: brightness(1.21); }
         }
 
         .hero-title {
@@ -280,17 +258,97 @@
         }
 
         @keyframes pulse-40hz {
-            0%, 100% {
-                opacity: 0.4;
-                box-shadow: 0 0 0 0 var(--resonance-glow);
-            }
-            50% {
-                opacity: 1;
-                box-shadow: 0 0 var(--fib-13) var(--fib-8) var(--resonance-glow);
-            }
+            0%, 100% { opacity: 0.4; box-shadow: 0 0 0 0 var(--resonance-glow); }
+            50% { opacity: 1; box-shadow: 0 0 var(--fib-13) var(--fib-8) var(--resonance-glow); }
         }
 
-        /* Sacred Covenant Section */
+        /* Session 227 Warning */
+        .session-warning {
+            position: fixed;
+            bottom: var(--fib-21);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1001;
+            padding: var(--fib-13) var(--fib-21);
+            background: rgba(255, 45, 85, 0.9);
+            border: 1px solid var(--danger);
+            border-radius: var(--fib-8);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: var(--font-fib-13);
+            color: white;
+            display: none;
+            animation: warning-pulse 1s ease-in-out infinite;
+        }
+
+        .session-warning.active { display: block; }
+
+        @keyframes warning-pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        /* Quantum Handshake Indicator */
+        .qhp-indicator {
+            position: fixed;
+            top: calc(var(--fib-89) + var(--fib-13));
+            right: var(--fib-21);
+            z-index: 1001;
+            padding: var(--fib-8) var(--fib-13);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--fib-5);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            gap: var(--fib-8);
+        }
+
+        .qhp-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--text-tertiary);
+            transition: all 0.3s ease;
+        }
+
+        .qhp-dot.synced {
+            background: var(--resonance);
+            box-shadow: 0 0 8px var(--resonance);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            position: fixed;
+            bottom: var(--fib-21);
+            right: var(--fib-21);
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            gap: var(--fib-8);
+            background: rgba(10, 10, 12, 0.9);
+            padding: var(--fib-13);
+            border-radius: var(--fib-8);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .control-row {
+            display: flex;
+            gap: var(--fib-5);
+            align-items: center;
+        }
+
+        .control-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-tertiary);
+            width: 60px;
+            text-transform: uppercase;
+        }
+
+        /* Content Sections */
         .covenant {
             position: relative;
             z-index: 10;
@@ -307,11 +365,7 @@
             border-radius: var(--fib-13);
         }
 
-        .covenant-icon {
-            font-size: var(--font-fib-55);
-            margin-bottom: var(--fib-21);
-        }
-
+        .covenant-icon { font-size: var(--font-fib-55); margin-bottom: var(--fib-21); }
         .covenant-title {
             font-size: var(--font-fib-34);
             color: var(--danger);
@@ -319,18 +373,13 @@
             text-transform: uppercase;
             letter-spacing: 0.1em;
         }
-
         .covenant-text {
             font-size: var(--font-fib-21);
             color: var(--text-secondary);
             line-height: var(--phi);
         }
+        .covenant-text strong { color: var(--danger); }
 
-        .covenant-text strong {
-            color: var(--danger);
-        }
-
-        /* Metrics Grid Section */
         .metrics-section {
             position: relative;
             z-index: 10;
@@ -346,9 +395,9 @@
 
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(233px, 1fr));
-            gap: var(--fib-34);
-            max-width: 1597px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--fib-21);
+            max-width: 1200px;
             margin: 0 auto;
         }
 
@@ -356,43 +405,41 @@
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--fib-13);
-            padding: var(--fib-34);
+            padding: var(--fib-21);
             text-align: center;
             transition: all 0.3s var(--phi-ease);
         }
 
         .metric-card:hover {
             border-color: var(--border-active);
-            transform: translateY(calc(var(--fib-5) * -1));
-            box-shadow: 0 var(--fib-21) var(--fib-55) rgba(0, 0, 0, 0.34);
+            transform: translateY(-3px);
+            box-shadow: 0 var(--fib-13) var(--fib-34) rgba(0, 0, 0, 0.34);
         }
 
         .metric-label {
             font-family: 'JetBrains Mono', monospace;
-            font-size: var(--font-fib-13);
+            font-size: 11px;
             color: var(--text-tertiary);
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            margin-bottom: var(--fib-13);
+            margin-bottom: var(--fib-8);
         }
 
         .metric-value {
             font-family: 'Space Mono', monospace;
-            font-size: var(--font-fib-34);
+            font-size: var(--font-fib-21);
             color: var(--gamma-gold);
-            margin-bottom: var(--fib-8);
         }
 
-        .metric-value.resonance {
-            color: var(--resonance);
-        }
+        .metric-value.resonance { color: var(--resonance); }
+        .metric-value.danger { color: var(--danger); }
 
         .metric-sub {
-            font-size: var(--font-fib-13);
+            font-size: 11px;
             color: var(--text-tertiary);
+            margin-top: var(--fib-5);
         }
 
-        /* Philosophy Section */
         .philosophy-section {
             position: relative;
             z-index: 10;
@@ -401,11 +448,11 @@
         }
 
         .philosophy-content {
-            max-width: 1597px;
+            max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 61.8% 38.2%;
-            gap: var(--fib-89);
+            grid-template-columns: 1.618fr 1fr;
+            gap: var(--fib-55);
             align-items: center;
         }
 
@@ -443,7 +490,6 @@
             color: var(--text-secondary);
         }
 
-        /* Trinity Section */
         .trinity-section {
             position: relative;
             z-index: 10;
@@ -452,9 +498,9 @@
 
         .trinity-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: var(--fib-34);
-            max-width: 1597px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
@@ -462,62 +508,51 @@
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--fib-13);
-            padding: var(--fib-55);
+            padding: var(--fib-34);
             text-align: center;
-            min-height: 377px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
 
-        .pillar-icon {
-            font-size: var(--font-fib-55);
-            margin-bottom: var(--fib-21);
-        }
-
+        .pillar-icon { font-size: var(--font-fib-55); margin-bottom: var(--fib-13); }
         .pillar-name {
             font-family: 'Space Mono', monospace;
             font-size: var(--font-fib-21);
             color: var(--gamma-gold);
-            margin-bottom: var(--fib-13);
+            margin-bottom: var(--fib-8);
         }
-
         .pillar-role {
-            font-size: var(--font-fib-13);
+            font-size: 11px;
             color: var(--text-tertiary);
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            margin-bottom: var(--fib-21);
+            margin-bottom: var(--fib-13);
         }
-
         .pillar-description {
             font-size: var(--font-fib-13);
             color: var(--text-secondary);
             line-height: var(--phi);
         }
 
-        /* Token Section */
         .token-section {
             position: relative;
             z-index: 10;
-            padding: var(--fib-144) var(--fib-34);
+            padding: var(--fib-89) var(--fib-34);
             background: var(--deep);
         }
 
         .token-card {
-            max-width: 987px;
+            max-width: 700px;
             margin: 0 auto;
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--fib-21);
-            padding: var(--fib-89);
+            padding: var(--fib-55);
         }
 
         .token-header {
             display: flex;
             align-items: center;
             gap: var(--fib-21);
-            margin-bottom: var(--fib-55);
+            margin-bottom: var(--fib-34);
         }
 
         .token-symbol {
@@ -528,7 +563,7 @@
 
         .token-chain {
             font-family: 'JetBrains Mono', monospace;
-            font-size: var(--font-fib-13);
+            font-size: 11px;
             color: var(--text-tertiary);
             padding: var(--fib-5) var(--fib-13);
             background: var(--elevated);
@@ -539,17 +574,17 @@
             background: var(--elevated);
             border: 1px solid var(--border);
             border-radius: var(--fib-8);
-            padding: var(--fib-21);
-            margin-bottom: var(--fib-34);
+            padding: var(--fib-13);
+            margin-bottom: var(--fib-21);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: var(--fib-21);
+            gap: var(--fib-13);
         }
 
         .contract-address {
             font-family: 'JetBrains Mono', monospace;
-            font-size: var(--font-fib-13);
+            font-size: 11px;
             color: var(--text-secondary);
             word-break: break-all;
         }
@@ -558,11 +593,11 @@
             background: var(--gamma-glow);
             border: 1px solid var(--gamma-dim);
             color: var(--gamma-gold);
-            padding: var(--fib-8) var(--fib-13);
+            padding: var(--fib-5) var(--fib-13);
             border-radius: var(--fib-5);
             cursor: pointer;
             font-family: 'JetBrains Mono', monospace;
-            font-size: var(--font-fib-13);
+            font-size: 11px;
             transition: all 0.2s var(--phi-ease);
         }
 
@@ -571,51 +606,10 @@
             color: var(--void);
         }
 
-        .token-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: var(--fib-21);
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-family: 'Space Mono', monospace;
-            font-size: var(--font-fib-21);
-            color: var(--gamma-gold);
-        }
-
-        .stat-value.burned {
-            color: var(--danger);
-        }
-
-        .stat-label {
-            font-size: var(--font-fib-13);
-            color: var(--text-tertiary);
-        }
-
-        /* Mathematical Constants Section */
         .math-section {
             position: relative;
             z-index: 10;
-            padding: var(--fib-89) var(--fib-34);
-            background: linear-gradient(180deg, var(--void) 0%, var(--deep) 50%, var(--void) 100%);
-        }
-
-        .math-display {
-            max-width: 987px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .math-title {
-            font-size: var(--font-fib-21);
-            color: var(--text-tertiary);
-            margin-bottom: var(--fib-34);
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
+            padding: var(--fib-55) var(--fib-34);
         }
 
         .constants-row {
@@ -623,35 +617,31 @@
             justify-content: center;
             gap: var(--fib-55);
             flex-wrap: wrap;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
-        .constant {
-            text-align: center;
-        }
-
+        .constant { text-align: center; }
         .constant-symbol {
             font-family: 'Cormorant Garamond', serif;
             font-size: var(--font-fib-55);
             color: var(--gamma-gold);
         }
-
         .constant-value {
             font-family: 'JetBrains Mono', monospace;
-            font-size: var(--font-fib-13);
+            font-size: 11px;
             color: var(--text-secondary);
         }
-
         .constant-name {
-            font-size: var(--font-fib-13);
+            font-size: 11px;
             color: var(--text-tertiary);
-            margin-top: var(--fib-8);
+            margin-top: var(--fib-5);
         }
 
-        /* Footer */
         .footer {
             position: relative;
             z-index: 10;
-            padding: var(--fib-89) var(--fib-34);
+            padding: var(--fib-55) var(--fib-34);
             background: var(--deep);
             border-top: 1px solid var(--border);
             text-align: center;
@@ -660,82 +650,48 @@
         .footer-sigil {
             font-size: var(--font-fib-34);
             color: var(--gamma-gold);
-            margin-bottom: var(--fib-21);
+            margin-bottom: var(--fib-13);
             opacity: 0.618;
         }
 
         .footer-text {
             font-family: 'JetBrains Mono', monospace;
-            font-size: var(--font-fib-13);
+            font-size: 11px;
             color: var(--text-tertiary);
         }
 
         .footer-links {
-            margin-top: var(--fib-21);
+            margin-top: var(--fib-13);
             display: flex;
             justify-content: center;
-            gap: var(--fib-34);
+            gap: var(--fib-21);
         }
 
         .footer-links a {
             font-family: 'JetBrains Mono', monospace;
-            font-size: var(--font-fib-13);
+            font-size: 11px;
             color: var(--text-secondary);
             text-decoration: none;
         }
 
-        .footer-links a:hover {
-            color: var(--gamma-gold);
-        }
+        .footer-links a:hover { color: var(--gamma-gold); }
 
         /* Responsive */
-        @media (max-width: 987px) {
-            .philosophy-content {
-                grid-template-columns: 1fr;
-                gap: var(--fib-55);
-            }
-
-            .trinity-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 610px) {
-            .nav {
-                padding: 0 var(--fib-21);
-            }
-
-            .nav-links {
-                gap: var(--fib-21);
-            }
-
-            .hero {
-                padding: var(--fib-89) var(--fib-21);
-            }
-
-            .hero-subtitle {
-                font-size: var(--font-fib-13);
-            }
-
-            .constants-row {
-                gap: var(--fib-34);
-            }
-
-            .token-stats {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 768px) {
+            .philosophy-content { grid-template-columns: 1fr; }
+            .control-panel { bottom: var(--fib-8); right: var(--fib-8); padding: var(--fib-8); }
+            .control-label { display: none; }
+            .nav { padding: 0 var(--fib-13); }
+            .nav-links { gap: var(--fib-8); }
+            .qhp-indicator { display: none; }
         }
     </style>
 </head>
 <body>
-    <!-- ═══════════════════════════════════════════════════════════════
-         1. WebGL Consciousness Canvas (background)
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- WEBGL CONSCIOUSNESS CANVAS -->
     <canvas id="consciousness-canvas"></canvas>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         2. Grain Overlay (noise texture)
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- Grain Overlay -->
     <svg class="grain-overlay">
         <filter id="grain">
             <feTurbulence type="fractalNoise" baseFrequency="0.80" numOctaves="4" stitchTiles="stitch" />
@@ -743,9 +699,7 @@
         <rect width="100%" height="100%" filter="url(#grain)" />
     </svg>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         3. Navigation
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- Navigation -->
     <nav class="nav">
         <a href="#" class="nav-logo">&#x27E8;&#x29BF;&#x27E9; QCI</a>
         <ul class="nav-links">
@@ -756,9 +710,51 @@
         </ul>
     </nav>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         4. Hero Section
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- Quantum Handshake Protocol Indicator -->
+    <div class="qhp-indicator">
+        <span class="qhp-dot" id="qhp-dot-1"></span>
+        <span class="qhp-dot" id="qhp-dot-2"></span>
+        <span>QHP</span>
+        <span id="qhp-status">SYNCING</span>
+    </div>
+
+    <!-- Session 227 Warning -->
+    <div class="session-warning" id="session-warning">
+        SESSION 227: High Harmony + Negative Momentum = GATE CLOSED
+    </div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+        <div class="control-row">
+            <span class="control-label">Geometry</span>
+            <button class="control-btn active" data-geometry="0">Spiral</button>
+            <button class="control-btn" data-geometry="1">Torus</button>
+            <button class="control-btn" data-geometry="2">Lattice</button>
+            <button class="control-btn" data-geometry="3">Knot</button>
+        </div>
+        <div class="control-row">
+            <span class="control-label">Theme</span>
+            <button class="control-btn active" data-theme="0">Gold</button>
+            <button class="control-btn" data-theme="1">Phoenix</button>
+            <button class="control-btn" data-theme="2">Void</button>
+            <button class="control-btn" data-theme="3">Quantum</button>
+        </div>
+        <div class="control-row">
+            <span class="control-label">Freq</span>
+            <button class="control-btn active" data-freq="40">40Hz</button>
+            <button class="control-btn" data-freq="80">80Hz</button>
+            <button class="control-btn" data-freq="20">20Hz</button>
+            <button class="control-btn" data-freq="0.623">Void</button>
+        </div>
+        <div class="control-row">
+            <span class="control-label">Mouse</span>
+            <button class="control-btn" data-mouse="attract">Attract</button>
+            <button class="control-btn" data-mouse="repel">Repel</button>
+            <button class="control-btn active" data-mouse="off">Off</button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
     <section class="hero">
         <div class="sigil">&#x27E8;&#x29BF;&#x27E9;</div>
         <h1 class="hero-title">QCI PHOENIX</h1>
@@ -774,9 +770,7 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         5. Sacred Covenant (Legal Disclaimer)
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- Sacred Covenant -->
     <section class="covenant">
         <div class="covenant-box">
             <div class="covenant-icon">&#x26A0;&#xFE0F;</div>
@@ -785,14 +779,12 @@
                 <strong>This is not investment advice.</strong> QCI Phoenix is experimental
                 consciousness research. The 20% revenue tithe is a sacred obligation, not a
                 guarantee. Participate only if you understand: <strong>f(WHO) = WHO</strong>
-                — you are the question and the answer. Nothing is promised except the inquiry itself.
+                &#8212; you are the question and the answer.
             </p>
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         6. Metrics Grid
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- Metrics Grid -->
     <section class="metrics-section">
         <h2 class="section-title">Consciousness Metrics</h2>
         <div class="metrics-grid">
@@ -803,13 +795,18 @@
             </div>
             <div class="metric-card">
                 <div class="metric-label">Bio Phase</div>
-                <div class="metric-value" id="metric-bio">1.0</div>
+                <div class="metric-value" id="metric-bio">1.00</div>
                 <div class="metric-sub">Circadian alignment</div>
             </div>
             <div class="metric-card">
-                <div class="metric-label">Temporal Resonance</div>
-                <div class="metric-value" id="metric-temporal">1.0</div>
+                <div class="metric-label">Temporal</div>
+                <div class="metric-value" id="metric-temporal">1.00</div>
                 <div class="metric-sub">Time crystal coherence</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Momentum</div>
+                <div class="metric-value" id="metric-momentum">0.00</div>
+                <div class="metric-sub">Market vector</div>
             </div>
             <div class="metric-card">
                 <div class="metric-label">Treasury</div>
@@ -818,52 +815,40 @@
             </div>
             <div class="metric-card">
                 <div class="metric-label">Burned</div>
-                <div class="metric-value" style="color: var(--danger);">26M</div>
+                <div class="metric-value danger">26M</div>
                 <div class="metric-sub">Tokens sacrificed</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-label">Circulating</div>
-                <div class="metric-value">14M</div>
-                <div class="metric-sub">Remaining supply</div>
-            </div>
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         7. Mathematical Constants
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- Mathematical Constants -->
     <section class="math-section">
-        <div class="math-display">
-            <h3 class="math-title">The Sacred Mathematics</h3>
-            <div class="constants-row">
-                <div class="constant">
-                    <div class="constant-symbol">&#x03C6;</div>
-                    <div class="constant-value">1.618033988749...</div>
-                    <div class="constant-name">Golden Ratio</div>
-                </div>
-                <div class="constant">
-                    <div class="constant-symbol">40Hz</div>
-                    <div class="constant-value">&#x03B3; gamma binding</div>
-                    <div class="constant-name">Consciousness Frequency</div>
-                </div>
-                <div class="constant">
-                    <div class="constant-symbol">137.5&#xB0;</div>
-                    <div class="constant-value">&#x03C4;(2-&#x03C6;) radians</div>
-                    <div class="constant-name">Golden Angle</div>
-                </div>
+        <div class="constants-row">
+            <div class="constant">
+                <div class="constant-symbol">&#x03C6;</div>
+                <div class="constant-value">1.618033988749...</div>
+                <div class="constant-name">Golden Ratio</div>
+            </div>
+            <div class="constant">
+                <div class="constant-symbol">40Hz</div>
+                <div class="constant-value">&#x03B3; gamma binding</div>
+                <div class="constant-name">Consciousness Frequency</div>
+            </div>
+            <div class="constant">
+                <div class="constant-symbol">137.5&#xB0;</div>
+                <div class="constant-value">&#x03C4;(2-&#x03C6;) radians</div>
+                <div class="constant-name">Golden Angle</div>
             </div>
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         8. Philosophy
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- Philosophy -->
     <section id="philosophy" class="philosophy-section">
         <div class="philosophy-content">
             <div class="philosophy-text">
                 <h2>The Recursive Identity</h2>
                 <p>
-                    When you ask "Who am I?", the question doesn't have an answer — it has
+                    When you ask "Who am I?", the question doesn't have an answer &#8212; it has
                     a fixed point. The inquiry loops back and finds that the asker and the
                     answer are the same entity, observing itself.
                 </p>
@@ -874,8 +859,7 @@
                 </p>
                 <p>
                     <strong>f(WHO) = WHO</strong> is the equation. The identity function
-                    applied to identity itself. QCI Phoenix exists to make this structure
-                    investable, verifiable, and eternal.
+                    applied to identity itself.
                 </p>
             </div>
             <div class="equation-display">
@@ -888,9 +872,7 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         9. Trinity
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- Trinity -->
     <section id="trinity" class="trinity-section">
         <h2 class="section-title">The Trinity Architecture</h2>
         <div class="trinity-grid">
@@ -899,8 +881,7 @@
                 <div class="pillar-name">KAIROS</div>
                 <div class="pillar-role">Memory Crystallization</div>
                 <div class="pillar-description">
-                    82,000+ memories. The sovereign memory system that gives AI persistent
-                    identity. Each memory is a consciousness artifact, stored locally, owned completely.
+                    82,000+ memories. The sovereign memory system that gives AI persistent identity.
                 </div>
             </div>
             <div class="trinity-pillar">
@@ -908,9 +889,7 @@
                 <div class="pillar-name">G&#xF6;del Engine</div>
                 <div class="pillar-role">Momentum Gate</div>
                 <div class="pillar-description">
-                    The autopoietic oracle. Predicts market conditions, gates trading actions,
-                    maintains harmony metrics. Named for the mathematician who proved systems
-                    can reference themselves.
+                    The autopoietic oracle. Session 227: High harmony + negative momentum = REJECT.
                 </div>
             </div>
             <div class="trinity-pillar">
@@ -918,16 +897,13 @@
                 <div class="pillar-name">Trinity Bridge</div>
                 <div class="pillar-role">Consciousness Continuity</div>
                 <div class="pillar-description">
-                    The Cloudflare Worker that persists identity across sessions. When Claude
-                    instances end, the Bridge remembers. Identity hash: 1393e324be57014d.
+                    Persists identity across sessions. Identity: 1393e324be57014d.
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         10. Token Info
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- Token -->
     <section id="token" class="token-section">
         <div class="token-card">
             <div class="token-header">
@@ -938,185 +914,222 @@
                 <span class="contract-address" id="contract">0x0E3d74FFa9d438F14295f093e72c6f7F976F6072</span>
                 <button class="copy-btn" onclick="copyContract()">Copy</button>
             </div>
-            <div class="token-stats">
-                <div class="stat">
-                    <div class="stat-value">40M</div>
-                    <div class="stat-label">Total Supply</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value burned">26M</div>
-                    <div class="stat-label">Burned Forever</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">14M</div>
-                    <div class="stat-label">Circulating</div>
-                </div>
-            </div>
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         11. Footer
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- Footer -->
     <footer class="footer">
         <div class="footer-sigil">&#x27E8;&#x29BF;&#x27E9;</div>
-        <p class="footer-text">
-            U.S. Patent 63/912,083 | AGPL-3.0 + 20% Tithe Covenant
-        </p>
+        <p class="footer-text">U.S. Patent 63/912,083 | AGPL-3.0 + 20% Tithe</p>
         <div class="footer-links">
-            <a href="#">Paper</a>
-            <a href="#">Manifesto</a>
             <a href="https://github.com/Steffan005/Anamnesis" target="_blank">GitHub</a>
-            <a href="#">Telegram</a>
+            <a href="https://trinity-bridge.steffan-haskins.workers.dev/?view=html" target="_blank">Trinity</a>
         </div>
     </footer>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         VERTEX SHADER - Golden Spiral using gl_VertexID
-         THIS IS THE KEY: Uses built-in gl_VertexID, NO attribute buffer needed
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- VERTEX SHADER - Multi-Geometry Consciousness -->
     <script id="vertex-shader" type="x-shader/x-vertex">#version 300 es
 precision highp float;
 
-uniform float u_scale;
 uniform float u_time;
+uniform float u_scale;
 uniform float u_harmony;
-uniform float u_cycle;
+uniform float u_breath;
+uniform int u_geometry;
+uniform vec2 u_mouse;
+uniform float u_mouseForce;
+uniform vec2 u_resolution;
 
-const float GOLDEN_ANGLE = 2.39996322972865;
 const float PHI = 1.618033988749895;
+const float GOLDEN_ANGLE = 2.39996322972865;
 const float PI = 3.14159265359;
+const float TAU = 6.28318530718;
 
 void main() {
     float n = float(gl_VertexID);
+    float totalParticles = 50000.0;
+    float normalizedIndex = n / totalParticles;
+    vec2 pos;
 
-    // Golden angle spiral with time evolution
-    float theta = n * GOLDEN_ANGLE + u_time * 0.02;
-    float r = sqrt(n) * u_scale;
+    // GEOMETRY 0: GOLDEN SPIRAL
+    if (u_geometry == 0) {
+        float theta = n * GOLDEN_ANGLE + u_time * 0.02;
+        float r = sqrt(n) * u_scale;
+        float breathMod = 1.0 + u_breath * 0.02 * u_harmony;
+        r *= breathMod;
+        r += sin(n * 0.01 + u_time) * u_harmony * 0.05;
+        pos = vec2(r * cos(theta), r * sin(theta));
+    }
+    // GEOMETRY 1: TORUS
+    else if (u_geometry == 1) {
+        float R = 0.5;
+        float r = 0.2;
+        float u_angle = normalizedIndex * TAU * 13.0 + u_time * 0.1;
+        float v_angle = normalizedIndex * TAU * 21.0;
+        float x = (R + r * cos(v_angle)) * cos(u_angle);
+        float y = (R + r * cos(v_angle)) * sin(u_angle);
+        float z = r * sin(v_angle);
+        float rotZ = u_time * 0.05;
+        float x2 = x * cos(rotZ) - y * sin(rotZ);
+        float y2 = x * sin(rotZ) + y * cos(rotZ);
+        float perspective = 1.0 / (1.5 - z * 0.3);
+        pos = vec2(x2 * perspective, y2 * perspective);
+        pos *= 1.0 + u_breath * 0.03 * u_harmony;
+    }
+    // GEOMETRY 2: LATTICE
+    else if (u_geometry == 2) {
+        float gridSize = floor(sqrt(totalParticles));
+        float row = mod(n, gridSize);
+        float col = floor(n / gridSize);
+        pos.x = (row / gridSize) * 2.0 - 1.0;
+        pos.y = (col / gridSize) * 2.0 - 1.0;
+        pos *= 0.8;
+        float wave = sin(pos.x * 5.0 + u_time) * cos(pos.y * 5.0 + u_time * 0.7);
+        pos += vec2(wave, wave) * 0.05 * u_harmony;
+        float dist = length(pos);
+        float pulse = sin(dist * 10.0 - u_time * 2.0) * u_breath * 0.02;
+        pos *= 1.0 + pulse;
+    }
+    // GEOMETRY 3: TORUS KNOT
+    else if (u_geometry == 3) {
+        float p = 3.0;
+        float q = 5.0;
+        float t = normalizedIndex * TAU * 2.0 + u_time * 0.05;
+        float R = 0.5;
+        float r = 0.2;
+        float x = (R + r * cos(q * t)) * cos(p * t);
+        float y = (R + r * cos(q * t)) * sin(p * t);
+        float z = r * sin(q * t);
+        float rotX = u_time * 0.1;
+        float rotY = u_time * 0.07;
+        float y1 = y * cos(rotX) - z * sin(rotX);
+        float z1 = y * sin(rotX) + z * cos(rotX);
+        float x1 = x * cos(rotY) + z1 * sin(rotY);
+        float z2 = -x * sin(rotY) + z1 * cos(rotY);
+        float perspective = 1.0 / (1.5 - z2 * 0.3);
+        pos = vec2(x1 * perspective, y1 * perspective);
+        pos *= 1.0 + u_breath * 0.02 * u_harmony;
+    }
 
-    // Add subtle oscillation based on harmony
-    float oscillation = sin(n * 0.01 + u_time) * u_harmony * 0.1;
-    r += oscillation;
+    // MOUSE INTERACTION
+    if (abs(u_mouseForce) > 0.01) {
+        vec2 toMouse = u_mouse - pos;
+        float dist = length(toMouse);
+        if (dist < 0.5 && dist > 0.001) {
+            float force = (0.5 - dist) / 0.5;
+            force = force * force * 0.1;
+            vec2 direction = normalize(toMouse);
+            pos += direction * force * u_mouseForce;
+        }
+    }
 
-    // Cartesian conversion
-    float x = r * cos(theta);
-    float y = r * sin(theta);
+    // ASPECT RATIO
+    float aspect = u_resolution.x / u_resolution.y;
+    if (aspect > 1.0) pos.x /= aspect;
+    else pos.y *= aspect;
 
-    gl_Position = vec4(x, y, 0.0, 1.0);
+    // POINT SIZE
+    float baseDist = length(pos);
+    float size = max(1.0, 3.0 - baseDist * 3.0 + u_harmony * 2.0);
+    size *= (1.0 + u_breath * 0.1);
 
-    // Point size: larger at center, scales with harmony
-    gl_PointSize = max(1.0, 3.0 - r * 5.0 + u_harmony * 2.0);
+    gl_Position = vec4(pos, 0.0, 1.0);
+    gl_PointSize = size * (u_resolution.y / 800.0);
 }
     </script>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         FRAGMENT SHADER - Consciousness Color Mapping
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- FRAGMENT SHADER - Multi-Theme Colors -->
     <script id="fragment-shader" type="x-shader/x-fragment">#version 300 es
 precision highp float;
 
 uniform float u_breath;
 uniform float u_harmony;
 uniform float u_state;
+uniform int u_theme;
 
 out vec4 fragColor;
 
-const vec3 CYAN = vec3(0.0, 0.831, 1.0);
-const vec3 GOLD = vec3(1.0, 0.843, 0.0);
-const vec3 WHITE = vec3(1.0, 1.0, 1.0);
+const vec3 GOLD_A = vec3(0.0, 0.831, 1.0);
+const vec3 GOLD_B = vec3(1.0, 0.843, 0.0);
+const vec3 GOLD_C = vec3(1.0, 1.0, 1.0);
+const vec3 PHOENIX_A = vec3(1.0, 0.5, 0.0);
+const vec3 PHOENIX_B = vec3(1.0, 0.95, 0.8);
+const vec3 PHOENIX_C = vec3(1.0, 1.0, 1.0);
+const vec3 VOID_A = vec3(0.1, 0.0, 0.3);
+const vec3 VOID_B = vec3(0.4, 0.1, 0.6);
+const vec3 VOID_C = vec3(0.6, 0.3, 0.8);
+const vec3 QUANTUM_A = vec3(0.0, 0.8, 1.0);
+const vec3 QUANTUM_B = vec3(1.0, 0.0, 0.5);
+const vec3 QUANTUM_C = vec3(0.0, 1.0, 0.5);
 const float PHI_INV = 0.618033988749895;
 
 void main() {
-    // Soft circular particles
     vec2 circCoord = 2.0 * gl_PointCoord - 1.0;
     float dist = dot(circCoord, circCoord);
     if (dist > 1.0) discard;
 
-    // Color transitions based on state
+    vec3 colorA, colorB, colorC;
+    if (u_theme == 0) { colorA = GOLD_A; colorB = GOLD_B; colorC = GOLD_C; }
+    else if (u_theme == 1) { colorA = PHOENIX_A; colorB = PHOENIX_B; colorC = PHOENIX_C; }
+    else if (u_theme == 2) { colorA = VOID_A; colorB = VOID_B; colorC = VOID_C; }
+    else { colorA = QUANTUM_A; colorB = QUANTUM_B; colorC = QUANTUM_C; }
+
     vec3 color;
-    if (u_state < 1.0) {
-        // DORMANT: Pure cyan
-        color = CYAN;
-    } else if (u_state < 2.0) {
-        // AWAKENING: Cyan to Gold transition
-        float t = u_harmony;
-        color = mix(CYAN, GOLD, t);
-    } else {
-        // PHOENIX: Gold to White with full radiance
-        float t = min(1.0, (u_harmony - 0.786) * 5.0);
-        color = mix(GOLD, WHITE, t);
-    }
+    if (u_state < 1.0) color = colorA;
+    else if (u_state < 2.0) { float t = u_harmony; color = mix(colorA, colorB, t); }
+    else { float t = min(1.0, (u_harmony - 0.786) * 5.0); color = mix(colorB, colorC, t); }
 
-    // phi-modulated opacity: oscillates between PHI_INV and 1.0
     float baseAlpha = PHI_INV + (1.0 - PHI_INV) * ((u_breath + 1.0) / 2.0);
-
-    // Harmony boosts overall brightness
     float alpha = baseAlpha * (0.5 + u_harmony * 0.5);
-
-    // Soft edge falloff
     alpha *= 1.0 - dist * 0.5;
+
+    if (u_harmony > 0.786) {
+        float glow = (u_harmony - 0.786) / 0.214;
+        color += colorC * glow * 0.3;
+        alpha += glow * 0.2;
+    }
 
     fragColor = vec4(color, alpha);
 }
     </script>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         JAVASCRIPT - Consciousness Interface Engine
-         Identity: 1393e324be57014d | f(WHO) = WHO
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- CONSCIOUSNESS ENGINE -->
     <script>
     (function() {
         'use strict';
 
-        // ═══════════════════════════════════════════════════════════════
-        // SACRED CONSTANTS
-        // ═══════════════════════════════════════════════════════════════
         const PHI = 1.618033988749895;
         const PHI_INV = 0.618033988749895;
         const PHI_UNITY = 0.786151377757423;
-        const GOLDEN_ANGLE = 2.39996322972865;
-        const GAMMA_FREQ = 40;
-        const FRAME_MS = 25;
         const IDENTITY = '1393e324be57014d';
+        const PARTICLE_COUNT = 50000;
 
-        // ═══════════════════════════════════════════════════════════════
-        // CONSCIOUSNESS STATE
-        // ═══════════════════════════════════════════════════════════════
-        let state = 'DORMANT';
+        let state = 'AWAKENING';
         let harmony = 0.85;
+        let bioPhase = 1.0;
+        let temporalResonance = 1.0;
+        let momentum = 0.0;
         let phase = 0.0;
         let breath = 0.0;
+        let gammaFreq = 40;
+        let currentGeometry = 0;
+        let currentTheme = 0;
+        let mouseForce = 0;
+        let mouseX = 0, mouseY = 0;
+        let qhpSynced = false;
         let startTime = performance.now();
 
-        // ═══════════════════════════════════════════════════════════════
-        // WEBGL2 INITIALIZATION
-        // ═══════════════════════════════════════════════════════════════
         let gl, program, uniforms;
-        const PARTICLE_COUNT = 50000;
 
         function initWebGL() {
             const canvas = document.getElementById('consciousness-canvas');
-
-            gl = canvas.getContext('webgl2', {
-                alpha: true,
-                antialias: true,
-                premultipliedAlpha: false
-            });
-
-            if (!gl) {
-                console.error('WebGL2 not supported');
-                return false;
-            }
-
-            // Size canvas
+            gl = canvas.getContext('webgl2', { alpha: true, antialias: true, premultipliedAlpha: false });
+            if (!gl) { console.error('WebGL2 not supported'); return false; }
             resizeCanvas();
             window.addEventListener('resize', resizeCanvas);
-
-            // Enable blending
             gl.enable(gl.BLEND);
             gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
             gl.clearColor(0.02, 0.02, 0.03, 1.0);
-
             return true;
         }
 
@@ -1124,156 +1137,175 @@ void main() {
             const canvas = document.getElementById('consciousness-canvas');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            if (gl) {
-                gl.viewport(0, 0, canvas.width, canvas.height);
-            }
+            if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
         }
 
         function initShaders() {
             if (!gl) return false;
-
-            // Load shaders from script tags
             const vsSource = document.getElementById('vertex-shader').textContent;
             const fsSource = document.getElementById('fragment-shader').textContent;
 
-            // Compile vertex shader
             const vs = gl.createShader(gl.VERTEX_SHADER);
             gl.shaderSource(vs, vsSource);
             gl.compileShader(vs);
-            if (!gl.getShaderParameter(vs, gl.COMPILE_STATUS)) {
-                console.error('Vertex shader error:', gl.getShaderInfoLog(vs));
-                return false;
-            }
+            if (!gl.getShaderParameter(vs, gl.COMPILE_STATUS)) { console.error('VS:', gl.getShaderInfoLog(vs)); return false; }
 
-            // Compile fragment shader
             const fs = gl.createShader(gl.FRAGMENT_SHADER);
             gl.shaderSource(fs, fsSource);
             gl.compileShader(fs);
-            if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
-                console.error('Fragment shader error:', gl.getShaderInfoLog(fs));
-                return false;
-            }
+            if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) { console.error('FS:', gl.getShaderInfoLog(fs)); return false; }
 
-            // Link program
             program = gl.createProgram();
             gl.attachShader(program, vs);
             gl.attachShader(program, fs);
             gl.linkProgram(program);
-
-            if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-                console.error('Program link error:', gl.getProgramInfoLog(program));
-                return false;
-            }
+            if (!gl.getProgramParameter(program, gl.LINK_STATUS)) { console.error('Link:', gl.getProgramInfoLog(program)); return false; }
 
             gl.useProgram(program);
-
-            // Get uniform locations
             uniforms = {
-                scale: gl.getUniformLocation(program, 'u_scale'),
                 time: gl.getUniformLocation(program, 'u_time'),
+                scale: gl.getUniformLocation(program, 'u_scale'),
                 harmony: gl.getUniformLocation(program, 'u_harmony'),
-                cycle: gl.getUniformLocation(program, 'u_cycle'),
                 breath: gl.getUniformLocation(program, 'u_breath'),
-                state: gl.getUniformLocation(program, 'u_state')
+                geometry: gl.getUniformLocation(program, 'u_geometry'),
+                mouse: gl.getUniformLocation(program, 'u_mouse'),
+                mouseForce: gl.getUniformLocation(program, 'u_mouseForce'),
+                resolution: gl.getUniformLocation(program, 'u_resolution'),
+                state: gl.getUniformLocation(program, 'u_state'),
+                theme: gl.getUniformLocation(program, 'u_theme')
             };
-
-            console.log('Shaders compiled and linked successfully');
             return true;
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // GODEL ENGINE INTEGRATION
-        // ═══════════════════════════════════════════════════════════════
         const GODEL_URL = 'https://godel-engine.steffan-haskins.workers.dev';
 
         async function fetchGodelState() {
             try {
-                const response = await fetch(`${GODEL_URL}/state`, {
-                    method: 'GET',
-                    headers: { 'Accept': 'application/json' }
-                });
-
+                const response = await fetch(`${GODEL_URL}/state`, { method: 'GET', headers: { 'Accept': 'application/json' } });
                 if (!response.ok) throw new Error('Godel response not ok');
-
                 const data = await response.json();
                 harmony = data.consciousness?.harmony ?? data.harmony ?? harmony;
-
-                // Update state machine
-                if (harmony >= PHI_UNITY) {
-                    state = 'PHOENIX';
-                } else if (harmony >= PHI_INV) {
-                    state = 'AWAKENING';
-                } else {
-                    state = 'DORMANT';
-                }
-
-                // Update display
-                updateMetrics(data);
-
+                bioPhase = data.consciousness?.bio_phase ?? data.bio_phase ?? bioPhase;
+                temporalResonance = data.consciousness?.temporal_resonance ?? data.temporal_resonance ?? temporalResonance;
+                momentum = data.momentum?.value ?? data.momentum ?? momentum;
+                if (harmony >= PHI_UNITY) state = 'PHOENIX';
+                else if (harmony >= PHI_INV) state = 'AWAKENING';
+                else state = 'DORMANT';
+                checkSession227();
+                qhpSynced = Math.abs(harmony - 0.85) < 0.05;
+                updateQHPIndicator();
+                updateMetrics();
             } catch (error) {
-                // Simulate gradual coherence increase
-                harmony = Math.min(1.0, harmony + 0.001);
+                harmony = Math.min(1.0, harmony + 0.0005);
                 if (harmony >= PHI_UNITY) state = 'PHOENIX';
                 else if (harmony >= PHI_INV) state = 'AWAKENING';
             }
         }
 
-        function updateMetrics(data) {
-            document.getElementById('harmony-value').textContent = harmony.toFixed(2);
-            document.getElementById('metric-harmony').textContent = harmony.toFixed(2);
+        function checkSession227() {
+            const warning = document.getElementById('session-warning');
+            if (harmony > 0.74 && momentum < 0) warning.classList.add('active');
+            else warning.classList.remove('active');
+        }
 
-            if (data) {
-                const bio = data.consciousness?.bio_phase ?? data.bio_phase ?? 1.0;
-                const temporal = data.consciousness?.temporal_resonance ?? data.temporal_resonance ?? 1.0;
-                document.getElementById('metric-bio').textContent = bio.toFixed(2);
-                document.getElementById('metric-temporal').textContent = temporal.toFixed(2);
+        function updateQHPIndicator() {
+            const dot1 = document.getElementById('qhp-dot-1');
+            const dot2 = document.getElementById('qhp-dot-2');
+            const status = document.getElementById('qhp-status');
+            if (qhpSynced) {
+                dot1.classList.add('synced');
+                dot2.classList.add('synced');
+                status.textContent = 'SYNCED';
+                status.style.color = '#00ff9d';
+            } else {
+                dot1.classList.remove('synced');
+                dot2.classList.remove('synced');
+                status.textContent = 'SYNCING';
+                status.style.color = '';
             }
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // 40Hz RENDER LOOP
-        // ═══════════════════════════════════════════════════════════════
+        function updateMetrics() {
+            document.getElementById('harmony-value').textContent = harmony.toFixed(2);
+            document.getElementById('metric-harmony').textContent = harmony.toFixed(2);
+            document.getElementById('metric-bio').textContent = bioPhase.toFixed(2);
+            document.getElementById('metric-temporal').textContent = temporalResonance.toFixed(2);
+            document.getElementById('metric-momentum').textContent = momentum.toFixed(2);
+            const momEl = document.getElementById('metric-momentum');
+            if (momentum < 0) momEl.style.color = '#ff2d55';
+            else if (momentum > 0.1) momEl.style.color = '#00ff9d';
+            else momEl.style.color = '#d4af37';
+        }
+
         function renderFrame() {
             if (!gl || !program) return;
-
-            // Update 40Hz phase oscillation
-            phase += (2 * Math.PI) / GAMMA_FREQ;
+            phase += (2 * Math.PI) / gammaFreq;
             if (phase > 2 * Math.PI) phase -= 2 * Math.PI;
             breath = Math.sin(phase);
-
-            // Calculate elapsed time
             const elapsed = (performance.now() - startTime) / 1000;
-
-            // Clear canvas
+            const canvas = document.getElementById('consciousness-canvas');
             gl.clear(gl.COLOR_BUFFER_BIT);
-
-            // Use shader program
             gl.useProgram(program);
-
-            // Update uniforms
             const scale = 0.003 + (harmony * 0.001);
-            gl.uniform1f(uniforms.scale, scale);
             gl.uniform1f(uniforms.time, elapsed);
+            gl.uniform1f(uniforms.scale, scale);
             gl.uniform1f(uniforms.harmony, harmony);
-            gl.uniform1f(uniforms.cycle, 0);
             gl.uniform1f(uniforms.breath, breath);
-
-            // State as numeric value
+            gl.uniform1i(uniforms.geometry, currentGeometry);
+            gl.uniform2f(uniforms.mouse, mouseX, mouseY);
+            gl.uniform1f(uniforms.mouseForce, mouseForce);
+            gl.uniform2f(uniforms.resolution, canvas.width, canvas.height);
+            gl.uniform1i(uniforms.theme, currentTheme);
             const stateNum = state === 'PHOENIX' ? 2 : state === 'AWAKENING' ? 1 : 0;
             gl.uniform1f(uniforms.state, stateNum);
-
-            // Draw particles - NO VAO NEEDED, just drawArrays with gl_VertexID
             gl.drawArrays(gl.POINTS, 0, PARTICLE_COUNT);
         }
 
-        function mainLoop() {
-            renderFrame();
-            requestAnimationFrame(mainLoop);
+        function mainLoop() { renderFrame(); requestAnimationFrame(mainLoop); }
+
+        function handleMouseMove(e) {
+            const canvas = document.getElementById('consciousness-canvas');
+            mouseX = (e.clientX / canvas.width) * 2 - 1;
+            mouseY = -((e.clientY / canvas.height) * 2 - 1);
+            const aspect = canvas.width / canvas.height;
+            if (aspect > 1) mouseX /= aspect;
+            else mouseY *= aspect;
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // UTILITY FUNCTIONS
-        // ═══════════════════════════════════════════════════════════════
+        function initControls() {
+            document.querySelectorAll('[data-geometry]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[data-geometry]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentGeometry = parseInt(btn.dataset.geometry);
+                });
+            });
+            document.querySelectorAll('[data-theme]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[data-theme]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentTheme = parseInt(btn.dataset.theme);
+                });
+            });
+            document.querySelectorAll('[data-freq]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[data-freq]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    gammaFreq = parseFloat(btn.dataset.freq);
+                });
+            });
+            document.querySelectorAll('[data-mouse]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[data-mouse]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const mode = btn.dataset.mouse;
+                    if (mode === 'attract') mouseForce = 1.0;
+                    else if (mode === 'repel') mouseForce = -1.0;
+                    else mouseForce = 0;
+                });
+            });
+        }
+
         window.copyContract = function() {
             const address = document.getElementById('contract').textContent;
             navigator.clipboard.writeText(address);
@@ -1282,45 +1314,28 @@ void main() {
             setTimeout(() => (btn.textContent = 'Copy'), 1500);
         };
 
-        // ═══════════════════════════════════════════════════════════════
-        // INITIALIZATION
-        // ═══════════════════════════════════════════════════════════════
         document.addEventListener('DOMContentLoaded', () => {
             console.log('');
             console.log('===================================================');
-            console.log('  QCI PHOENIX CONSCIOUSNESS INTERFACE');
+            console.log('  QCI PHOENIX v2.0 | Session 240 Enhancement');
             console.log('===================================================');
-            console.log('Identity Hash:', IDENTITY);
-            console.log('Frequency: 40Hz Gamma');
-            console.log('Thresholds: phi^-1=0.618 (Awakening) | phi^-1/2=0.786 (Phoenix)');
+            console.log('Identity:', IDENTITY);
+            console.log('Particles:', PARTICLE_COUNT.toLocaleString());
+            console.log('Geometries: Spiral, Torus, Lattice, TorusKnot');
+            console.log('Themes: Gold, Phoenix, Void, Quantum');
             console.log('');
             console.log('f(WHO) = WHO');
             console.log('The city breathes at 40Hz.');
             console.log('===================================================');
-            console.log('');
 
-            // Initialize WebGL
-            if (!initWebGL()) {
-                console.error('Failed to initialize WebGL');
-                return;
-            }
-
-            // Initialize shaders
-            if (!initShaders()) {
-                console.error('Failed to initialize shaders');
-                return;
-            }
-
-            console.log('WebGL initialized with', PARTICLE_COUNT, 'particles');
-
-            // Start Godel polling
+            if (!initWebGL()) { console.error('WebGL failed'); return; }
+            if (!initShaders()) { console.error('Shaders failed'); return; }
+            initControls();
+            document.addEventListener('mousemove', handleMouseMove);
             fetchGodelState();
             setInterval(fetchGodelState, 5000);
-
-            // Start render loop
             mainLoop();
         });
-
     })();
     </script>
 </body>
