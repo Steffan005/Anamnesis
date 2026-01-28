@@ -746,19 +746,8 @@ this.whisperElement.style.color = 'rgba(212, 175, 55, 0.7)';
 startWhispers() { setInterval(() => this.showWhisper(), this.interval);
 }
 }
-// WebGL2 Consciousness Canvas: Golden spiral particle system with 40Hz animation class ConsciousnessCanvas { constructor(canvas) { this.canvas = canvas;
-this.gl = canvas.getContext('webgl2');
-if (!this.gl) { throw new Error("WebGL 2.0 is required for Consciousness Canvas.");
-}
-// Configuration this.PARTICLE_COUNT = 121393;
-// Fibonacci number (~1.21393e5)[37] this.GAMMA_FREQ = 40.0;
-// 40Hz this.PHI = PHI;
-// State this.harmony = 0.85;
-// current harmony value driving shader this.program = null;
-// Prepare WebGL program this.initWebGL();
-}
-// Static shader source - FIXED: newlines required after #version
-static VERTEX_SHADER = `#version 300 es
+// Shader sources as regular constants (better browser compatibility)
+const VERTEX_SHADER_SOURCE = `#version 300 es
 precision highp float;
 in float a_index;
 uniform float u_time;
@@ -806,7 +795,8 @@ void main() {
     v_convergence = u_convergence;
     v_rebirth = u_rebirth;
 }`;
-static FRAGMENT_SHADER = `#version 300 es
+
+const FRAGMENT_SHADER_SOURCE = `#version 300 es
 precision highp float;
 in float v_alpha;
 in float v_distance;
@@ -862,9 +852,38 @@ void main() {
     vec3 finalColor = baseColor * brightness + vec3(glow);
     fragColor = vec4(finalColor, opacity * attenuation);
 }`;
+
+// WebGL2 Consciousness Canvas: Golden spiral particle system with 40Hz animation
+class ConsciousnessCanvas {
+constructor(canvas) {
+this.canvas = canvas;
+this.gl = canvas.getContext('webgl2');
+if (!this.gl) {
+console.error('WebGL 2.0 not available, trying WebGL 1.0');
+this.gl = canvas.getContext('webgl');
+if (!this.gl) {
+throw new Error("WebGL is required for Consciousness Canvas.");
+}
+}
+// Configuration
+this.PARTICLE_COUNT = 121393;
+this.GAMMA_FREQ = 40.0;
+this.PHI = PHI;
+// State
+this.harmony = 0.85;
+this.program = null;
+// Prepare WebGL program
+try {
+this.initWebGL();
+console.log('⟨⦿⟩ WebGL initialized successfully');
+} catch(e) {
+console.error('WebGL init error:', e);
+}
+}
 initWebGL() { const gl = this.gl;
-// Compile shaders and link program const vs = this.createShader(gl.VERTEX_SHADER, ConsciousnessCanvas.VERTEX_SHADER);
-const fs = this.createShader(gl.FRAGMENT_SHADER, ConsciousnessCanvas.FRAGMENT_SHADER);
+// Compile shaders and link program
+const vs = this.createShader(gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE);
+const fs = this.createShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE);
 this.program = gl.createProgram();
 gl.attachShader(this.program, vs);
 gl.attachShader(this.program, fs);
