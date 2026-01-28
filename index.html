@@ -746,276 +746,240 @@ this.whisperElement.style.color = 'rgba(212, 175, 55, 0.7)';
 startWhispers() { setInterval(() => this.showWhisper(), this.interval);
 }
 }
-// Shader sources as regular constants (better browser compatibility)
+// ═══════════════════════════════════════════════════════════════════════════════
+// OMEGA SPIRAL SHADERS - Using gl_VertexID (no attribute buffer needed)
+// Based on: "The 40Hz Anamnesis Interface – A Multi-Layered Fractal Consciousness Design"
+// ═══════════════════════════════════════════════════════════════════════════════
+
 const VERTEX_SHADER_SOURCE = `#version 300 es
 precision highp float;
-in float a_index;
-uniform float u_time;
-uniform float u_phi;
-uniform float u_gamma_freq;
-uniform vec2 u_resolution;
-uniform float u_harmony;
-uniform float u_breath;
-uniform float u_convergence;
-uniform float u_rebirth;
-out float v_alpha;
-out float v_distance;
-out float v_convergence;
-out float v_rebirth;
-const float PI = 3.14159265359;
-const float TAU = 6.28318530718;
+
+// Uniforms
+uniform float uPointSize;
+uniform float uScale;
+uniform float uBreath;
+uniform vec2 uResolution;
+
+// Golden angle constant: 2π(1 - 1/φ) ≈ 137.5°
 const float GOLDEN_ANGLE = 2.399963229728653;
-const float PHI = 1.618033988749895;
+
 void main() {
-    float i = a_index;
-    float breath = sin(u_time * u_gamma_freq * TAU);
-    float r = 0.006 * (0.5 + 0.5 * u_harmony) * sqrt(i);
-    r += r * 0.008 * u_breath * u_harmony;
-    float theta = i * GOLDEN_ANGLE;
-    theta += u_time * 0.1;
-    if (u_convergence > 0.01) {
-        r *= (1.0 - u_convergence * 0.15 * (0.5 + 0.5 * sin(u_time * 120.0)));
-        theta -= u_convergence * 0.05 * sin(i * 0.0001);
+    // Use gl_VertexID as the particle index - NO attribute buffer needed!
+    float n = float(gl_VertexID);
+
+    // Phyllotaxis formula: θ = n × golden_angle, r = √n
+    float theta = n * GOLDEN_ANGLE;
+    float r = sqrt(n);
+
+    // Convert polar to cartesian
+    float x = r * cos(theta) * uScale;
+    float y = r * sin(theta) * uScale;
+
+    // Aspect ratio correction
+    float aspect = uResolution.x / uResolution.y;
+    if (aspect > 1.0) {
+        x /= aspect;
+    } else {
+        y *= aspect;
     }
-    if (u_rebirth > 0.01) {
-        r *= (1.0 + u_rebirth * 0.3);
-        theta *= (1.0 + u_rebirth * 0.05);
-    }
-    vec2 pos = vec2(r * cos(theta), r * sin(theta));
-    float aspect = u_resolution.x / u_resolution.y;
-    if (aspect > 1.0) { pos.x /= aspect; }
-    else { pos.y *= aspect; }
-    float size = (3.5 / (r + 0.1)) * (0.8 + 0.2 * u_breath);
-    size *= (1.0 + u_convergence * 0.3);
-    size *= (1.0 + u_rebirth * 0.5);
-    gl_PointSize = size * (u_resolution.y / 1000.0);
-    gl_Position = vec4(pos, 0.0, 1.0);
-    v_alpha = 0.4 + 0.3 * fract(i * 0.618);
-    v_distance = length(pos) * 100.0;
-    v_convergence = u_convergence;
-    v_rebirth = u_rebirth;
+
+    // Breath modulation - spiral expands/contracts with 40Hz rhythm
+    float breathMod = 1.0 + uBreath * 0.02;
+    x *= breathMod;
+    y *= breathMod;
+
+    gl_Position = vec4(x, y, 0.0, 1.0);
+    gl_PointSize = uPointSize;
 }`;
 
 const FRAGMENT_SHADER_SOURCE = `#version 300 es
 precision highp float;
-in float v_alpha;
-in float v_distance;
-in float v_convergence;
-in float v_rebirth;
-uniform float u_coherence;
-uniform float u_awakened;
-uniform float u_phoenixMode;
-uniform float u_breath;
-uniform float u_time;
-out vec4 fragColor;
-const vec3 QCI_CYAN = vec3(0.0, 0.9, 0.95);
-const vec3 GAMMA_GOLD = vec3(0.85, 0.72, 0.25);
-const vec3 PHOENIX_WHITE = vec3(1.0, 0.98, 0.92);
-const vec3 CONVERGENCE_SILVER = vec3(0.9, 0.95, 1.0);
-const vec3 REBIRTH_GOLD = vec3(1.0, 0.85, 0.4);
+
+uniform float uBreath;
+uniform float uCoherence;
+
+out vec4 outColor;
+
+// φ inverse for opacity range
+const float PHI_INV = 0.618033988749895;
+
 void main() {
+    // Soft circular point
     vec2 coord = gl_PointCoord - vec2(0.5);
     float dist = length(coord);
     if (dist > 0.5) discard;
+
+    // Soft edge
     float edge = smoothstep(0.5, 0.1, dist);
-    vec3 baseColor = mix(QCI_CYAN, GAMMA_GOLD, u_coherence);
-    if (u_phoenixMode > 0.5) {
-        baseColor = mix(baseColor, PHOENIX_WHITE, 0.4 + u_breath * 0.2);
-    }
-    float brightness = 1.0;
-    if (u_awakened > 0.5) {
-        brightness = 1.2 + u_breath * 0.4;
-    }
-    float glow = 0.0;
-    if (u_phoenixMode > 0.5) {
-        glow = 0.6 * (1.0 + u_breath);
-    }
-    if (v_convergence > 0.01) {
-        float pulse = sin(u_time * 120.0) * 0.5 + 0.5;
-        baseColor = mix(baseColor, CONVERGENCE_SILVER, v_convergence * 0.7);
-        float core = smoothstep(0.4, 0.0, dist) * v_convergence;
-        baseColor = mix(baseColor, vec3(1.0), core * 0.9);
-        brightness += v_convergence * 0.5 * pulse;
-    }
-    if (v_rebirth > 0.01) {
-        float pulse = sin(u_time * 80.0) * 0.5 + 0.5;
-        baseColor = mix(baseColor, REBIRTH_GOLD, v_rebirth * 0.6);
-        float core = smoothstep(0.5, 0.0, dist) * v_rebirth;
-        baseColor = mix(baseColor, vec3(1.0), core);
-        brightness += v_rebirth * 0.6 * pulse;
-    }
-    float opacity = mix(0.618, 1.0, (u_breath + 1.0) / 2.0);
-    opacity *= v_alpha * edge;
-    opacity *= (1.0 + v_convergence * 0.4);
-    opacity *= (1.0 + v_rebirth * 0.5);
-    float attenuation = 1.0 / (1.0 + v_distance * 0.008);
-    vec3 finalColor = baseColor * brightness + vec3(glow);
-    fragColor = vec4(finalColor, opacity * attenuation);
+
+    // Alpha oscillates between PHI_INV (0.618) and 1.0 with breath
+    // breath ranges [-1, 1], map to [PHI_INV, 1.0]
+    float alpha = PHI_INV + (1.0 - PHI_INV) * ((uBreath + 1.0) / 2.0);
+
+    // Color: blend from cyan to gold based on coherence
+    vec3 cyan = vec3(0.0, 0.85, 0.9);
+    vec3 gold = vec3(1.0, 0.8, 0.2);
+    vec3 color = mix(cyan, gold, uCoherence);
+
+    // Add shimmer at center
+    color += vec3(0.2) * (1.0 - dist * 2.0) * (0.5 + 0.5 * uBreath);
+
+    outColor = vec4(color, alpha * edge);
 }`;
 
-// WebGL2 Consciousness Canvas: Golden spiral particle system with 40Hz animation
+// ═══════════════════════════════════════════════════════════════════════════════
+// CONSCIOUSNESS CANVAS - Omega Spiral Implementation
+// Uses gl_VertexID for particle indexing (no attribute buffer needed!)
+// ═══════════════════════════════════════════════════════════════════════════════
+
 class ConsciousnessCanvas {
-constructor(canvas) {
-this.canvas = canvas;
-console.log('⟨⦿⟩ Initializing WebGL context...');
-// Try WebGL2 with antialias
-this.gl = canvas.getContext('webgl2', { antialias: true, alpha: false });
-if (!this.gl) {
-console.warn('⟨⚠⟩ WebGL 2.0 not available');
-alert('WebGL2 not supported. Consciousness mirror unavailable.');
-return;
-}
-console.log('⟨⦿⟩ WebGL2 context acquired');
-// Configuration - REDUCED FOR TESTING
-this.PARTICLE_COUNT = 50000; // Reduced from 121393 for testing
-this.GAMMA_FREQ = 40.0;
-this.PHI = PHI;
-// State
-this.harmony = 0.85;
-this.program = null;
-// Prepare WebGL program
-try {
-this.initWebGL();
-} catch(e) {
-console.error('⟨✗⟩ WebGL init error:', e);
-alert('WebGL Error: ' + e.message);
-}
-}
-initWebGL() {
-const gl = this.gl;
-console.log('⟨⦿⟩ Compiling shaders...');
-// Compile shaders
-const vs = this.createShader(gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE, 'VERTEX');
-const fs = this.createShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE, 'FRAGMENT');
-if (!vs || !fs) {
-throw new Error('Shader compilation failed');
-}
-// Link program
-this.program = gl.createProgram();
-gl.attachShader(this.program, vs);
-gl.attachShader(this.program, fs);
-gl.linkProgram(this.program);
-if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
-const log = gl.getProgramInfoLog(this.program);
-throw new Error('Shader link error: ' + log);
-}
-console.log('⟨⦿⟩ Shaders linked successfully');
-// Validate program
-gl.validateProgram(this.program);
-if (!gl.getProgramParameter(this.program, gl.VALIDATE_STATUS)) {
-console.warn('⟨⚠⟩ Program validation warning:', gl.getProgramInfoLog(this.program));
-}
-// Check attribute location
-const indexLoc = gl.getAttribLocation(this.program, 'a_index');
-console.log('⟨⦿⟩ a_index attribute location:', indexLoc);
-if (indexLoc < 0) {
-throw new Error('Could not find a_index attribute');
-}
-// Log uniform locations
-gl.useProgram(this.program);
-const uniforms = ['u_time', 'u_resolution', 'u_harmony', 'u_breath', 'u_coherence', 'u_convergence', 'u_rebirth'];
-uniforms.forEach(name => {
-const loc = gl.getUniformLocation(this.program, name);
-console.log(`⟨⦿⟩ Uniform ${name}:`, loc !== null ? 'FOUND' : 'NULL');
-});
-// Set up particle data buffer
-console.log('⟨⦿⟩ Creating particle buffer with', this.PARTICLE_COUNT, 'particles');
-const indices = new Float32Array(this.PARTICLE_COUNT);
-for (let i = 0; i < this.PARTICLE_COUNT; i++) {
-indices[i] = i;
-}
-// Create and bind VAO
-const vao = gl.createVertexArray();
-gl.bindVertexArray(vao);
-// Create buffer
-const indexBuffer = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, indexBuffer);
-gl.bufferData(gl.ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-// Set up attribute
-gl.enableVertexAttribArray(indexLoc);
-gl.vertexAttribPointer(indexLoc, 1, gl.FLOAT, false, 0, 0);
-this.vao = vao;
-console.log('⟨⦿⟩ VAO created and bound');
-// Set up resizing
-this.resize();
-window.addEventListener('resize', () => this.resize());
-console.log('⟨⦿⟩ WebGL initialization COMPLETE');
-}
-createShader(type, source, name) {
-const gl = this.gl;
-const shader = gl.createShader(type);
-gl.shaderSource(shader, source);
-gl.compileShader(shader);
-// Always log shader info
-const log = gl.getShaderInfoLog(shader);
-if (log && log.length > 0) {
-console.warn(`⟨⚠⟩ ${name} shader log:`, log);
-}
-if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-const err = gl.getShaderInfoLog(shader);
-gl.deleteShader(shader);
-console.error(`⟨✗⟩ ${name} shader compile FAILED:`, err);
-throw new Error(`${name} shader compile error: ${err}`);
-}
-console.log(`⟨⦿⟩ ${name} shader compiled successfully`);
-return shader;
-}
-resize() { this.canvas.width = window.innerWidth;
-this.canvas.height = window.innerHeight;
-this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
-}
-render(state, breathValue) {
-const gl = this.gl;
-if (!gl || !this.program || !this.vao) {
-console.error('⟨✗⟩ Render called but WebGL not ready');
-return;
-}
-// Log first frame
-if (!this.frameCount) {
-this.frameCount = 0;
-console.log('⟨⦿⟩ First render frame');
-}
-this.frameCount++;
-if (this.frameCount === 60) {
-console.log('⟨⦿⟩ 60 frames rendered successfully');
-}
-// Dynamic background
-let bgR = 0.02, bgG = 0.02, bgB = 0.03;
-if (state.convergenceIntensity > 0.3) {
-    const flash = state.convergenceIntensity * 0.1;
-    bgR += flash; bgG += flash; bgB += flash * 1.2;
-}
-if (state.rebirthIntensity > 0.3) {
-    const flash = state.rebirthIntensity * 0.08;
-    bgR += flash; bgG += flash * 0.8; bgB += flash * 0.3;
-}
-gl.clearColor(bgR, bgG, bgB, 1.0);
-gl.clear(gl.COLOR_BUFFER_BIT);
-gl.useProgram(this.program);
-gl.bindVertexArray(this.vao);
-const time = (Date.now() - startTime) / 1000.0;
-gl.uniform1f(gl.getUniformLocation(this.program, 'u_time'), time);
-gl.uniform2f(gl.getUniformLocation(this.program, 'u_resolution'), this.canvas.width, this.canvas.height);
-gl.uniform1f(gl.getUniformLocation(this.program, 'u_phi'), this.PHI);
-gl.uniform1f(gl.getUniformLocation(this.program, 'u_gamma_freq'), this.GAMMA_FREQ);
-gl.uniform1f(gl.getUniformLocation(this.program, 'u_harmony'), state.effectiveCoherence);
-gl.uniform1f(gl.getUniformLocation(this.program, 'u_coherence'), state.effectiveCoherence);
-gl.uniform1f(gl.getUniformLocation(this.program, 'u_awakened'), state.awakened ? 1.0 : 0.0);
-gl.uniform1f(gl.getUniformLocation(this.program, 'u_phoenixMode'), state.phoenixMode ? 1.0 : 0.0);
-gl.uniform1f(gl.getUniformLocation(this.program, 'u_breath'), breathValue);
-gl.uniform1f(gl.getUniformLocation(this.program, 'u_convergence'), state.convergenceIntensity || 0.0);
-gl.uniform1f(gl.getUniformLocation(this.program, 'u_rebirth'), state.rebirthIntensity || 0.0);
-gl.enable(gl.BLEND);
-gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-gl.drawArrays(gl.POINTS, 0, this.PARTICLE_COUNT);
-// Check for WebGL errors on first few frames
-if (this.frameCount <= 3) {
-    const err = gl.getError();
-    if (err !== gl.NO_ERROR) {
-        console.error('⟨✗⟩ WebGL error:', err);
+    constructor(canvas) {
+        this.canvas = canvas;
+        console.log('⟨⦿⟩ Initializing Omega Spiral WebGL...');
+
+        // Get WebGL2 context
+        this.gl = canvas.getContext('webgl2', { antialias: true, alpha: false });
+        if (!this.gl) {
+            console.error('⟨✗⟩ WebGL2 not supported');
+            alert('WebGL2 not available. The consciousness mirror cannot manifest.');
+            return;
+        }
+        console.log('⟨⦿⟩ WebGL2 context acquired');
+
+        // Configuration
+        this.PARTICLE_COUNT = 121393; // Fibonacci prime: 121,393 harmonic witnesses
+        this.coherence = 0.5;
+        this.awakened = false;
+        this.program = null;
+
+        // Initialize
+        try {
+            this.initWebGL();
+            console.log('⟨⦿⟩ Omega Spiral initialized with', this.PARTICLE_COUNT, 'particles');
+        } catch (e) {
+            console.error('⟨✗⟩ WebGL initialization failed:', e);
+        }
     }
-}
-}
+
+    initWebGL() {
+        const gl = this.gl;
+
+        // Compile shaders
+        console.log('⟨⦿⟩ Compiling Omega Spiral shaders...');
+        const vs = this.compileShader(gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE);
+        const fs = this.compileShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE);
+
+        // Link program
+        this.program = gl.createProgram();
+        gl.attachShader(this.program, vs);
+        gl.attachShader(this.program, fs);
+        gl.linkProgram(this.program);
+
+        if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
+            throw new Error('Shader link failed: ' + gl.getProgramInfoLog(this.program));
+        }
+        console.log('⟨⦿⟩ Shaders linked successfully');
+
+        // Get uniform locations
+        gl.useProgram(this.program);
+        this.uniforms = {
+            uPointSize: gl.getUniformLocation(this.program, 'uPointSize'),
+            uScale: gl.getUniformLocation(this.program, 'uScale'),
+            uBreath: gl.getUniformLocation(this.program, 'uBreath'),
+            uResolution: gl.getUniformLocation(this.program, 'uResolution'),
+            uCoherence: gl.getUniformLocation(this.program, 'uCoherence')
+        };
+
+        // Log uniform locations
+        for (const [name, loc] of Object.entries(this.uniforms)) {
+            console.log(`⟨⦿⟩ Uniform ${name}:`, loc !== null ? 'OK' : 'NULL');
+        }
+
+        // Set up WebGL state
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+        // Create empty VAO (required for WebGL2, even with no attributes)
+        this.vao = gl.createVertexArray();
+        gl.bindVertexArray(this.vao);
+
+        // Set initial uniforms
+        gl.uniform1f(this.uniforms.uPointSize, 2.5);
+        gl.uniform1f(this.uniforms.uScale, 0.008); // Adjusted for screen fit
+
+        // Handle resize
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+
+        console.log('⟨⦿⟩ WebGL initialization COMPLETE');
+    }
+
+    compileShader(type, source) {
+        const gl = this.gl;
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            const log = gl.getShaderInfoLog(shader);
+            gl.deleteShader(shader);
+            throw new Error('Shader compile error: ' + log);
+        }
+
+        const typeName = type === gl.VERTEX_SHADER ? 'VERTEX' : 'FRAGMENT';
+        console.log(`⟨⦿⟩ ${typeName} shader compiled`);
+        return shader;
+    }
+
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    render(state, breathValue) {
+        const gl = this.gl;
+        if (!gl || !this.program) return;
+
+        // Log first frame
+        if (!this.frameCount) {
+            this.frameCount = 0;
+            console.log('⟨⦿⟩ First render frame - Omega Spiral manifesting...');
+        }
+        this.frameCount++;
+
+        // Clear with void black
+        gl.clearColor(0.0, 0.0, 0.02, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        // Use program and VAO
+        gl.useProgram(this.program);
+        gl.bindVertexArray(this.vao);
+
+        // Update uniforms
+        gl.uniform1f(this.uniforms.uBreath, breathValue);
+        gl.uniform1f(this.uniforms.uCoherence, state.effectiveCoherence || 0.5);
+        gl.uniform2f(this.uniforms.uResolution, this.canvas.width, this.canvas.height);
+
+        // Dynamic point size based on awakening
+        let pointSize = 2.5;
+        if (state.awakened) pointSize = 3.0;
+        if (state.phoenixMode) pointSize = 3.5;
+        gl.uniform1f(this.uniforms.uPointSize, pointSize);
+
+        // Dynamic scale - grows with coherence
+        const scale = 0.006 + state.effectiveCoherence * 0.004;
+        gl.uniform1f(this.uniforms.uScale, scale);
+
+        // Draw all particles - gl_VertexID provides the index!
+        gl.drawArrays(gl.POINTS, 0, this.PARTICLE_COUNT);
+
+        // Log milestone
+        if (this.frameCount === 60) {
+            console.log('⟨⦿⟩ 60 frames rendered - Spiral stable at 40Hz');
+        }
+    }
 }
 // Helper: compute organic breath value using φ modulation[11] function getBreath(phase) { const baseSine = Math.sin(phase);
 const phiModulation = 0.1 * Math.sin(phase / PHI);
