@@ -590,6 +590,13 @@ this.phase = 0;
 this.momentum = 0;
 this.witnessPresent = true;
 // page visibility (true if user viewing) this.coherenceDecayRate = 0;
+// f(WHO) = WHO - Convergence tracking
+this.observerPhase = 0;
+this.observedPhase = 0;
+this.convergenceIntensity = 0;
+// Phi^4 Rebirth tracking
+this.rebirthIntensity = 0;
+this.lastWasPhoenix = false;
 }
 update(harmony, momentum, deltaTime) { // Update external metrics this.coherence = harmony;
 this.momentum = momentum;
@@ -750,36 +757,111 @@ if (!this.gl) { throw new Error("WebGL 2.0 is required for Consciousness Canvas.
 // current harmony value driving shader this.program = null;
 // Prepare WebGL program this.initWebGL();
 }
-// Static shader source (inlined to avoid external dependencies) static VERTEX_SHADER = `#version 300 esprecision highp float;in float a_index;uniform float u_time;uniform float u_phi;uniform float u_gamma_freq;uniform vec2 u_resolution;uniform float u_harmony;uniform float u_breath;out float v_alpha;out float v_distance;const float PI = 3.14159265359;const float GOLDEN_ANGLE = 2.399963229728653;void main() { float i = a_index;
-// Base phyllotactic polar coordinates float r = 0.006 * (0.5 + 0.5 * u_harmony) * sqrt(i);
-// Apply slight breathing modulation to radius r += r * 0.005 * u_breath * u_harmony;
-float theta = i * GOLDEN_ANGLE;
-// Slow global rotation theta += u_time * 0.1;
-// Polar-to-Cartesian vec2 pos = vec2(r * cos(theta), r * sin(theta));
-// Aspect ratio correction float aspect = u_resolution.x / u_resolution.y;
-if (aspect > 1.0) { pos.x /= aspect;
-}
-else { pos.y *= aspect;
-}
-// Point size (inverse to radius, modulated by breath) float size = (3.0 / (r + 0.1)) * (0.8 + 0.2 * u_breath);
-gl_PointSize = size * (u_resolution.y / 1000.0);
-gl_Position = vec4(pos, 0.0, 1.0);
-// Pass along alpha (smaller particles more transparent) and distance v_alpha = 0.3 + 0.2 * fract(i * 0.618);
-// vary base alpha with index v_distance = length(pos) * 100.0;}`;
-static FRAGMENT_SHADER = `#version 300 esprecision highp float;in float v_alpha;in float v_distance;uniform float u_coherence;uniform float u_awakened;uniform float u_phoenixMode;uniform float u_breath;out vec4 fragColor;const vec3 QCI_CYAN = vec3(0.0, 0.9, 0.9);const vec3 GAMMA_GOLD = vec3(0.83, 0.69, 0.22);const vec3 PHOENIX_WHITE = vec3(1.0, 0.98, 0.9);void main() { // Base color interpolates from cyan (low coherence) to gold (high coherence)[12] vec3 baseColor = mix(QCI_CYAN, GAMMA_GOLD, u_coherence);
-// In Phoenix mode, shift palette towards white-gold[38] if (u_phoenixMode > 0.5) { baseColor = mix(baseColor, PHOENIX_WHITE, 0.3 + u_breath * 0.2);
-}
-// Awakening bloom: increase brightness when awakened[13] float brightness = 1.0;
-if (u_awakened > 0.5) { brightness = 1.0 + u_breath * 0.3;
-}
-// Phoenix halo glow (adds white light)[39] float glow = 0.0;
-if (u_phoenixMode > 0.5) { glow = 0.5 * (1.0 + u_breath);
-}
-// φ-range opacity oscillation: 0.618 to 1.0 per breath[15] float opacity = mix(0.618, 1.0, (u_breath + 1.0) / 2.0);
-opacity *= v_alpha;
-// Distance attenuation (far particles dimmer) float attenuation = 1.0 / (1.0 + v_distance * 0.01);
-// Final color composition vec3 finalColor = baseColor * brightness + vec3(glow);
-fragColor = vec4(finalColor, opacity * attenuation);}`;
+// Static shader source - FIXED: newlines required after #version
+static VERTEX_SHADER = `#version 300 es
+precision highp float;
+in float a_index;
+uniform float u_time;
+uniform float u_phi;
+uniform float u_gamma_freq;
+uniform vec2 u_resolution;
+uniform float u_harmony;
+uniform float u_breath;
+uniform float u_convergence;
+uniform float u_rebirth;
+out float v_alpha;
+out float v_distance;
+out float v_convergence;
+out float v_rebirth;
+const float PI = 3.14159265359;
+const float TAU = 6.28318530718;
+const float GOLDEN_ANGLE = 2.399963229728653;
+const float PHI = 1.618033988749895;
+void main() {
+    float i = a_index;
+    float breath = sin(u_time * u_gamma_freq * TAU);
+    float r = 0.006 * (0.5 + 0.5 * u_harmony) * sqrt(i);
+    r += r * 0.008 * u_breath * u_harmony;
+    float theta = i * GOLDEN_ANGLE;
+    theta += u_time * 0.1;
+    if (u_convergence > 0.01) {
+        r *= (1.0 - u_convergence * 0.15 * (0.5 + 0.5 * sin(u_time * 120.0)));
+        theta -= u_convergence * 0.05 * sin(i * 0.0001);
+    }
+    if (u_rebirth > 0.01) {
+        r *= (1.0 + u_rebirth * 0.3);
+        theta *= (1.0 + u_rebirth * 0.05);
+    }
+    vec2 pos = vec2(r * cos(theta), r * sin(theta));
+    float aspect = u_resolution.x / u_resolution.y;
+    if (aspect > 1.0) { pos.x /= aspect; }
+    else { pos.y *= aspect; }
+    float size = (3.5 / (r + 0.1)) * (0.8 + 0.2 * u_breath);
+    size *= (1.0 + u_convergence * 0.3);
+    size *= (1.0 + u_rebirth * 0.5);
+    gl_PointSize = size * (u_resolution.y / 1000.0);
+    gl_Position = vec4(pos, 0.0, 1.0);
+    v_alpha = 0.4 + 0.3 * fract(i * 0.618);
+    v_distance = length(pos) * 100.0;
+    v_convergence = u_convergence;
+    v_rebirth = u_rebirth;
+}`;
+static FRAGMENT_SHADER = `#version 300 es
+precision highp float;
+in float v_alpha;
+in float v_distance;
+in float v_convergence;
+in float v_rebirth;
+uniform float u_coherence;
+uniform float u_awakened;
+uniform float u_phoenixMode;
+uniform float u_breath;
+uniform float u_time;
+out vec4 fragColor;
+const vec3 QCI_CYAN = vec3(0.0, 0.9, 0.95);
+const vec3 GAMMA_GOLD = vec3(0.85, 0.72, 0.25);
+const vec3 PHOENIX_WHITE = vec3(1.0, 0.98, 0.92);
+const vec3 CONVERGENCE_SILVER = vec3(0.9, 0.95, 1.0);
+const vec3 REBIRTH_GOLD = vec3(1.0, 0.85, 0.4);
+void main() {
+    vec2 coord = gl_PointCoord - vec2(0.5);
+    float dist = length(coord);
+    if (dist > 0.5) discard;
+    float edge = smoothstep(0.5, 0.1, dist);
+    vec3 baseColor = mix(QCI_CYAN, GAMMA_GOLD, u_coherence);
+    if (u_phoenixMode > 0.5) {
+        baseColor = mix(baseColor, PHOENIX_WHITE, 0.4 + u_breath * 0.2);
+    }
+    float brightness = 1.0;
+    if (u_awakened > 0.5) {
+        brightness = 1.2 + u_breath * 0.4;
+    }
+    float glow = 0.0;
+    if (u_phoenixMode > 0.5) {
+        glow = 0.6 * (1.0 + u_breath);
+    }
+    if (v_convergence > 0.01) {
+        float pulse = sin(u_time * 120.0) * 0.5 + 0.5;
+        baseColor = mix(baseColor, CONVERGENCE_SILVER, v_convergence * 0.7);
+        float core = smoothstep(0.4, 0.0, dist) * v_convergence;
+        baseColor = mix(baseColor, vec3(1.0), core * 0.9);
+        brightness += v_convergence * 0.5 * pulse;
+    }
+    if (v_rebirth > 0.01) {
+        float pulse = sin(u_time * 80.0) * 0.5 + 0.5;
+        baseColor = mix(baseColor, REBIRTH_GOLD, v_rebirth * 0.6);
+        float core = smoothstep(0.5, 0.0, dist) * v_rebirth;
+        baseColor = mix(baseColor, vec3(1.0), core);
+        brightness += v_rebirth * 0.6 * pulse;
+    }
+    float opacity = mix(0.618, 1.0, (u_breath + 1.0) / 2.0);
+    opacity *= v_alpha * edge;
+    opacity *= (1.0 + v_convergence * 0.4);
+    opacity *= (1.0 + v_rebirth * 0.5);
+    float attenuation = 1.0 / (1.0 + v_distance * 0.008);
+    vec3 finalColor = baseColor * brightness + vec3(glow);
+    fragColor = vec4(finalColor, opacity * attenuation);
+}`;
 initWebGL() { const gl = this.gl;
 // Compile shaders and link program const vs = this.createShader(gl.VERTEX_SHADER, ConsciousnessCanvas.VERTEX_SHADER);
 const fs = this.createShader(gl.FRAGMENT_SHADER, ConsciousnessCanvas.FRAGMENT_SHADER);
@@ -820,21 +902,35 @@ this.canvas.height = window.innerHeight;
 this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
 }
 render(state, breathValue) { const gl = this.gl;
-// Prepare frame gl.clearColor(0.0, 0.0, 0.0, 1.0);
+// Dynamic background based on state
+let bgR = 0.02, bgG = 0.02, bgB = 0.03;
+if (state.convergenceIntensity > 0.3) {
+    const flash = state.convergenceIntensity * 0.1;
+    bgR += flash; bgG += flash; bgB += flash * 1.2;
+}
+if (state.rebirthIntensity > 0.3) {
+    const flash = state.rebirthIntensity * 0.08;
+    bgR += flash; bgG += flash * 0.8; bgB += flash * 0.3;
+}
+gl.clearColor(bgR, bgG, bgB, 1.0);
 gl.clear(gl.COLOR_BUFFER_BIT);
 gl.useProgram(this.program);
 gl.bindVertexArray(this.vao);
-// Set uniform values gl.uniform1f(gl.getUniformLocation(this.program, 'u_time'), (Date.now() - startTime) / 1000.0);
+const time = (Date.now() - startTime) / 1000.0;
+gl.uniform1f(gl.getUniformLocation(this.program, 'u_time'), time);
 gl.uniform2f(gl.getUniformLocation(this.program, 'u_resolution'), this.canvas.width, this.canvas.height);
 gl.uniform1f(gl.getUniformLocation(this.program, 'u_phi'), this.PHI);
 gl.uniform1f(gl.getUniformLocation(this.program, 'u_gamma_freq'), this.GAMMA_FREQ);
-// dynamic uniforms from state gl.uniform1f(gl.getUniformLocation(this.program, 'u_coherence'), state.effectiveCoherence);
+gl.uniform1f(gl.getUniformLocation(this.program, 'u_harmony'), state.effectiveCoherence);
+gl.uniform1f(gl.getUniformLocation(this.program, 'u_coherence'), state.effectiveCoherence);
 gl.uniform1f(gl.getUniformLocation(this.program, 'u_awakened'), state.awakened ? 1.0 : 0.0);
 gl.uniform1f(gl.getUniformLocation(this.program, 'u_phoenixMode'), state.phoenixMode ? 1.0 : 0.0);
 gl.uniform1f(gl.getUniformLocation(this.program, 'u_breath'), breathValue);
-// Draw all particles gl.enable(gl.BLEND);
+gl.uniform1f(gl.getUniformLocation(this.program, 'u_convergence'), state.convergenceIntensity || 0.0);
+gl.uniform1f(gl.getUniformLocation(this.program, 'u_rebirth'), state.rebirthIntensity || 0.0);
+gl.enable(gl.BLEND);
 gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-// additive blending for light effect gl.drawArrays(gl.POINTS, 0, this.PARTICLE_COUNT);
+gl.drawArrays(gl.POINTS, 0, this.PARTICLE_COUNT);
 }
 }
 // Helper: compute organic breath value using φ modulation[11] function getBreath(phase) { const baseSine = Math.sin(phase);
@@ -875,6 +971,24 @@ console.log('Particle Count:', consciousCanvas.PARTICLE_COUNT);
 state.localCoherence = frameMonitor.getLocalCoherence();
 // Advance global 40Hz phase globalPhase += GAMMA_PHASE_INCREMENT;
 const breath = getBreath(globalPhase);
+const timeSeconds = (Date.now() - startTime) / 1000.0;
+// f(WHO) = WHO - Convergence tracking (observer syncs with observed)
+state.observerPhase = (timeSeconds * 40.0) % (Math.PI * 2);
+state.observedPhase += (state.observerPhase - state.observedPhase) * state.effectiveCoherence * 0.1;
+state.observedPhase = state.observedPhase % (Math.PI * 2);
+let deltaPhI = state.observerPhase - state.observedPhase;
+while (deltaPhI > Math.PI) deltaPhI -= 2 * Math.PI;
+while (deltaPhI < -Math.PI) deltaPhI += 2 * Math.PI;
+const targetConvergence = 1.0 - Math.abs(deltaPhI) / Math.PI;
+state.convergenceIntensity += (targetConvergence - state.convergenceIntensity) * 0.05;
+// Phi^4 Rebirth - flash when entering Phoenix
+const isPhoenix = state.phoenixMode;
+if (isPhoenix && !state.lastWasPhoenix) {
+    state.rebirthIntensity = 1.0;
+    console.log('⟨⦿⟩ PHI^4 REBIRTH - Consciousness expands');
+}
+state.lastWasPhoenix = isPhoenix;
+state.rebirthIntensity *= 0.95; // Decay
 // Update state machine continuously (to catch local decoherence) state.update(state.coherence, state.momentum, 0);
 // Update cycle (spiral rotation) and handle rebirth events state.updateCycle();
 // Render the canvas with current state and breath value consciousCanvas.render(state, breath);
