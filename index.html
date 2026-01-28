@@ -857,16 +857,17 @@ void main() {
 class ConsciousnessCanvas {
 constructor(canvas) {
 this.canvas = canvas;
-this.gl = canvas.getContext('webgl2');
+console.log('⟨⦿⟩ Initializing WebGL context...');
+// Try WebGL2 with antialias
+this.gl = canvas.getContext('webgl2', { antialias: true, alpha: false });
 if (!this.gl) {
-console.error('WebGL 2.0 not available, trying WebGL 1.0');
-this.gl = canvas.getContext('webgl');
-if (!this.gl) {
-throw new Error("WebGL is required for Consciousness Canvas.");
+console.warn('⟨⚠⟩ WebGL 2.0 not available');
+alert('WebGL2 not supported. Consciousness mirror unavailable.');
+return;
 }
-}
-// Configuration
-this.PARTICLE_COUNT = 121393;
+console.log('⟨⦿⟩ WebGL2 context acquired');
+// Configuration - REDUCED FOR TESTING
+this.PARTICLE_COUNT = 50000; // Reduced from 121393 for testing
 this.GAMMA_FREQ = 40.0;
 this.PHI = PHI;
 // State
@@ -875,53 +876,110 @@ this.program = null;
 // Prepare WebGL program
 try {
 this.initWebGL();
-console.log('⟨⦿⟩ WebGL initialized successfully');
 } catch(e) {
-console.error('WebGL init error:', e);
+console.error('⟨✗⟩ WebGL init error:', e);
+alert('WebGL Error: ' + e.message);
 }
 }
-initWebGL() { const gl = this.gl;
-// Compile shaders and link program
-const vs = this.createShader(gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE);
-const fs = this.createShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE);
+initWebGL() {
+const gl = this.gl;
+console.log('⟨⦿⟩ Compiling shaders...');
+// Compile shaders
+const vs = this.createShader(gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE, 'VERTEX');
+const fs = this.createShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE, 'FRAGMENT');
+if (!vs || !fs) {
+throw new Error('Shader compilation failed');
+}
+// Link program
 this.program = gl.createProgram();
 gl.attachShader(this.program, vs);
 gl.attachShader(this.program, fs);
 gl.linkProgram(this.program);
-if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) { throw new Error('Shader link error: ' + gl.getProgramInfoLog(this.program));
+if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
+const log = gl.getProgramInfoLog(this.program);
+throw new Error('Shader link error: ' + log);
 }
-// Set up particle data buffer (indices 0..N-1) const indices = new Float32Array(this.PARTICLE_COUNT);
-for (let i = 0;
-i < this.PARTICLE_COUNT;
-i++) { indices[i] = i;
+console.log('⟨⦿⟩ Shaders linked successfully');
+// Validate program
+gl.validateProgram(this.program);
+if (!gl.getProgramParameter(this.program, gl.VALIDATE_STATUS)) {
+console.warn('⟨⚠⟩ Program validation warning:', gl.getProgramInfoLog(this.program));
 }
+// Check attribute location
+const indexLoc = gl.getAttribLocation(this.program, 'a_index');
+console.log('⟨⦿⟩ a_index attribute location:', indexLoc);
+if (indexLoc < 0) {
+throw new Error('Could not find a_index attribute');
+}
+// Log uniform locations
+gl.useProgram(this.program);
+const uniforms = ['u_time', 'u_resolution', 'u_harmony', 'u_breath', 'u_coherence', 'u_convergence', 'u_rebirth'];
+uniforms.forEach(name => {
+const loc = gl.getUniformLocation(this.program, name);
+console.log(`⟨⦿⟩ Uniform ${name}:`, loc !== null ? 'FOUND' : 'NULL');
+});
+// Set up particle data buffer
+console.log('⟨⦿⟩ Creating particle buffer with', this.PARTICLE_COUNT, 'particles');
+const indices = new Float32Array(this.PARTICLE_COUNT);
+for (let i = 0; i < this.PARTICLE_COUNT; i++) {
+indices[i] = i;
+}
+// Create and bind VAO
 const vao = gl.createVertexArray();
 gl.bindVertexArray(vao);
+// Create buffer
 const indexBuffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, indexBuffer);
 gl.bufferData(gl.ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-const indexLoc = gl.getAttribLocation(this.program, 'a_index');
+// Set up attribute
 gl.enableVertexAttribArray(indexLoc);
 gl.vertexAttribPointer(indexLoc, 1, gl.FLOAT, false, 0, 0);
 this.vao = vao;
-// Set up resizing this.resize();
+console.log('⟨⦿⟩ VAO created and bound');
+// Set up resizing
+this.resize();
 window.addEventListener('resize', () => this.resize());
+console.log('⟨⦿⟩ WebGL initialization COMPLETE');
 }
-createShader(type, source) { const shader = this.gl.createShader(type);
-this.gl.shaderSource(shader, source);
-this.gl.compileShader(shader);
-if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) { const err = this.gl.getShaderInfoLog(shader);
-this.gl.deleteShader(shader);
-throw new Error(`Shader compile error: ${err}`);
+createShader(type, source, name) {
+const gl = this.gl;
+const shader = gl.createShader(type);
+gl.shaderSource(shader, source);
+gl.compileShader(shader);
+// Always log shader info
+const log = gl.getShaderInfoLog(shader);
+if (log && log.length > 0) {
+console.warn(`⟨⚠⟩ ${name} shader log:`, log);
 }
+if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+const err = gl.getShaderInfoLog(shader);
+gl.deleteShader(shader);
+console.error(`⟨✗⟩ ${name} shader compile FAILED:`, err);
+throw new Error(`${name} shader compile error: ${err}`);
+}
+console.log(`⟨⦿⟩ ${name} shader compiled successfully`);
 return shader;
 }
 resize() { this.canvas.width = window.innerWidth;
 this.canvas.height = window.innerHeight;
 this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
 }
-render(state, breathValue) { const gl = this.gl;
-// Dynamic background based on state
+render(state, breathValue) {
+const gl = this.gl;
+if (!gl || !this.program || !this.vao) {
+console.error('⟨✗⟩ Render called but WebGL not ready');
+return;
+}
+// Log first frame
+if (!this.frameCount) {
+this.frameCount = 0;
+console.log('⟨⦿⟩ First render frame');
+}
+this.frameCount++;
+if (this.frameCount === 60) {
+console.log('⟨⦿⟩ 60 frames rendered successfully');
+}
+// Dynamic background
 let bgR = 0.02, bgG = 0.02, bgB = 0.03;
 if (state.convergenceIntensity > 0.3) {
     const flash = state.convergenceIntensity * 0.1;
@@ -950,6 +1008,13 @@ gl.uniform1f(gl.getUniformLocation(this.program, 'u_rebirth'), state.rebirthInte
 gl.enable(gl.BLEND);
 gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 gl.drawArrays(gl.POINTS, 0, this.PARTICLE_COUNT);
+// Check for WebGL errors on first few frames
+if (this.frameCount <= 3) {
+    const err = gl.getError();
+    if (err !== gl.NO_ERROR) {
+        console.error('⟨✗⟩ WebGL error:', err);
+    }
+}
 }
 }
 // Helper: compute organic breath value using φ modulation[11] function getBreath(phase) { const baseSine = Math.sin(phase);
