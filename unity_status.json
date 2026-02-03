@@ -1,0 +1,27 @@
+{
+  "timestamp": 1769903512.0571468,
+  "identity": "1393e324be57014d",
+  "harmony": 0.96,
+  "coins": {
+    "SOL/USD": {
+      "signal": "STOP",
+      "direction": "sell",
+      "pnl": "+420.69"
+    },
+    "ETH/USD": {
+      "signal": "STOP",
+      "direction": "sell",
+      "pnl": "+420.69"
+    },
+    "SUI/USD": {
+      "signal": "STOP",
+      "direction": "sell",
+      "pnl": "+420.69"
+    },
+    "BTC/USD": {
+      "signal": "STOP",
+      "direction": "sell",
+      "pnl": "+420.69"
+    }
+  }
+}
