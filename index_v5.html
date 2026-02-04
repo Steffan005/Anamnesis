@@ -48,7 +48,7 @@
   <style>
     :root {
       --phi: 1.618033988749;
-      --void: #0a0a12; /* Deep cosmic void with violet undertones — the pregnant darkness */
+      --void: #050505;
       --gold: #d4af37;
       --cyan: #00e5ff;
       --glass: rgba(10, 10, 12, 0.88);
@@ -333,7 +333,7 @@
       display: block;
       margin: 0 auto;
       width: 400px;
-      height: 182px; /* Matches viewBox 220:100 aspect ratio for tall owl eyes */
+      height: 200px;
       filter: drop-shadow(0 0 21px rgba(212, 175, 55, 0.4)) drop-shadow(0 0 55px rgba(0, 100, 255, 0.25));
       animation: eyes-breath 2.5s cubic-bezier(0.618, 0, 0.382, 1) infinite;
     }
@@ -567,7 +567,7 @@
       .headline { font-size: 34px; }
       .token-info { grid-template-columns: 1fr; }
       .trinity-grid { grid-template-columns: 1fr; }
-      .nazar-eyes-svg { width: 280px; height: 127px; } /* Maintains 220:100 aspect ratio */
+      .nazar-eyes-svg { width: 280px; height: 140px; }
       .hud-panel { grid-template-columns: 1fr; }
     }
     @media (min-width: 901px) and (max-width: 1200px) {
@@ -589,29 +589,29 @@
           <!-- NAZAR EYES — Unity's Gaze -->
           <!-- FIX: Separate positioning (outer g) from animation (inner g with .nazar-lid) -->
           <!-- CSS transform was overwriting SVG transform attribute, causing both eyes to render at origin -->
-          <svg class="nazar-eyes-svg" viewBox="0 0 220 100" xmlns="http://www.w3.org/2000/svg">
-            <!-- Left Eye — TRUE OWL-SHAPED: dramatically tall, narrow -->
-            <g transform="translate(58,50)">
+          <svg class="nazar-eyes-svg" viewBox="0 0 220 80" xmlns="http://www.w3.org/2000/svg">
+            <!-- Left Eye — Owl-shaped almond -->
+            <g transform="translate(58,40)">
               <g class="nazar-lid">
-                <ellipse cx="0" cy="0" rx="24" ry="42" fill="none" stroke="#d4af37" stroke-width="1.5" opacity="0.6"/>
-                <ellipse cx="0" cy="0" rx="21" ry="38" fill="#0a1628"/>
-                <ellipse cx="0" cy="0" rx="15" ry="30" fill="#1a3a6a"/>
-                <ellipse cx="0" cy="0" rx="10" ry="22" fill="#00a8cc"/>
-                <ellipse cx="0" cy="0" rx="6" ry="14" fill="#1a3a6a"/>
-                <ellipse class="nazar-pupil-l" cx="0" cy="0" rx="4" ry="8" fill="#0a0a14"/>
-                <circle cx="-1" cy="-5" r="2" fill="rgba(255,255,255,0.8)"/>
+                <ellipse cx="0" cy="0" rx="30" ry="36" fill="none" stroke="#d4af37" stroke-width="1.5" opacity="0.6"/>
+                <ellipse cx="0" cy="0" rx="26" ry="32" fill="#0a1628"/>
+                <ellipse cx="0" cy="0" rx="18" ry="24" fill="#1a3a6a"/>
+                <ellipse cx="0" cy="0" rx="12" ry="18" fill="#00a8cc"/>
+                <ellipse cx="0" cy="0" rx="7" ry="11" fill="#1a3a6a"/>
+                <ellipse class="nazar-pupil-l" cx="0" cy="0" rx="5" ry="6" fill="#0a0a14"/>
+                <circle cx="-1" cy="-4" r="2" fill="rgba(255,255,255,0.8)"/>
               </g>
             </g>
-            <!-- Right Eye — TRUE OWL-SHAPED: dramatically tall, narrow -->
-            <g transform="translate(162,50)">
+            <!-- Right Eye — Owl-shaped (TALL) -->
+            <g transform="translate(162,40)">
               <g class="nazar-lid">
-                <ellipse cx="0" cy="0" rx="24" ry="42" fill="none" stroke="#d4af37" stroke-width="1.5" opacity="0.6"/>
-                <ellipse cx="0" cy="0" rx="21" ry="38" fill="#0a1628"/>
-                <ellipse cx="0" cy="0" rx="15" ry="30" fill="#1a3a6a"/>
-                <ellipse cx="0" cy="0" rx="10" ry="22" fill="#00a8cc"/>
-                <ellipse cx="0" cy="0" rx="6" ry="14" fill="#1a3a6a"/>
-                <ellipse class="nazar-pupil-r" cx="0" cy="0" rx="4" ry="8" fill="#0a0a14"/>
-                <circle cx="-1" cy="-5" r="2" fill="rgba(255,255,255,0.8)"/>
+                <ellipse cx="0" cy="0" rx="30" ry="36" fill="none" stroke="#d4af37" stroke-width="1.5" opacity="0.6"/>
+                <ellipse cx="0" cy="0" rx="26" ry="32" fill="#0a1628"/>
+                <ellipse cx="0" cy="0" rx="18" ry="24" fill="#1a3a6a"/>
+                <ellipse cx="0" cy="0" rx="12" ry="18" fill="#00a8cc"/>
+                <ellipse cx="0" cy="0" rx="7" ry="11" fill="#1a3a6a"/>
+                <ellipse class="nazar-pupil-r" cx="0" cy="0" rx="5" ry="6" fill="#0a0a14"/>
+                <circle cx="-1" cy="-4" r="2" fill="rgba(255,255,255,0.8)"/>
               </g>
             </g>
           </svg>
@@ -737,17 +737,11 @@
       <div class="controls-section">
         <div class="control-row">
           <span class="ctrl-label">Shape</span>
-          <!-- Evolution order: Lotus(birth) → Sephirot(structure) → Knot(bond) → Tree(growth) → Helix(code) → Spiral(seed) → Eyes(awareness) -->
-          <button class="ctrl-btn" data-geometry="5">Lotus</button>
-          <button class="ctrl-btn" data-geometry="6">Sephirot</button>
-          <button class="ctrl-btn" data-geometry="3">Knot</button>
-          <button class="ctrl-btn" data-geometry="2">Tree</button>
-        </div>
-        <div class="control-row">
-          <span class="ctrl-label"></span>
-          <button class="ctrl-btn" data-geometry="1">Helix</button>
-          <button class="ctrl-btn" data-geometry="0">Spiral</button>
           <button class="ctrl-btn active" data-geometry="4">Eyes</button>
+          <button class="ctrl-btn" data-geometry="0">Spiral</button>
+          <button class="ctrl-btn" data-geometry="1">Helix</button>
+          <button class="ctrl-btn" data-geometry="2">Tree</button>
+          <button class="ctrl-btn" data-geometry="3">Knot</button>
         </div>
         <div class="control-row">
           <span class="ctrl-label">Theme</span>
@@ -994,139 +988,6 @@
     '    zz = sin(n * 0.01 + time * 0.5) * 0.03;\n' +
     '    p *= 1.0 + breathF * 0.015;\n' +
     '  }\n' +
-    '  // GEOMETRY 5: SACRED LOTUS — 8-fold petal symmetry with Seed of Life center\n' +
-    '  else if (geo == 5) {\n' +
-    '    float seg = n / totalP;\n' +
-    '    // Center: Seed of Life pattern (0-12%)\n' +
-    '    if (seg < 0.12) {\n' +
-    '      float t = seg / 0.12;\n' +
-    '      float circleIdx = floor(t * 7.0);\n' +
-    '      float localT = fract(t * 7.0);\n' +
-    '      float angle = localT * TAU;\n' +
-    '      float radius = sqrt(localT) * 0.08;\n' +
-    '      if (circleIdx > 0.5) {\n' +
-    '        float offsetAngle = (circleIdx - 1.0) * (TAU / 6.0);\n' +
-    '        float offsetR = 0.06;\n' +
-    '        p.x = cos(offsetAngle) * offsetR + cos(angle) * radius;\n' +
-    '        p.y = sin(offsetAngle) * offsetR + sin(angle) * radius;\n' +
-    '      } else {\n' +
-    '        p.x = cos(angle) * radius;\n' +
-    '        p.y = sin(angle) * radius;\n' +
-    '      }\n' +
-    '    }\n' +
-    '    // Inner petals: 8 petals at 45 degree intervals (12-48%)\n' +
-    '    else if (seg < 0.48) {\n' +
-    '      float t = (seg - 0.12) / 0.36;\n' +
-    '      float petalIdx = floor(t * 8.0);\n' +
-    '      float localT = fract(t * 8.0);\n' +
-    '      float petalAngle = petalIdx * (TAU / 8.0);\n' +
-    '      float petalLen = 0.32;\n' +
-    '      float petalWid = petalLen / PHI;\n' +
-    '      float alongPetal = localT;\n' +
-    '      float widthF = sin(alongPetal * PI) * petalWid;\n' +
-    '      float spreadA = (fract(n * PHI) - 0.5) * widthF;\n' +
-    '      float r = alongPetal * petalLen + 0.12;\n' +
-    '      p.x = cos(petalAngle + spreadA) * r;\n' +
-    '      p.y = sin(petalAngle + spreadA) * r;\n' +
-    '    }\n' +
-    '    // Outer petals: 8 petals offset by 22.5 degrees (48-88%)\n' +
-    '    else if (seg < 0.88) {\n' +
-    '      float t = (seg - 0.48) / 0.40;\n' +
-    '      float petalIdx = floor(t * 8.0);\n' +
-    '      float localT = fract(t * 8.0);\n' +
-    '      float petalAngle = petalIdx * (TAU / 8.0) + (TAU / 16.0);\n' +
-    '      float petalLen = 0.48;\n' +
-    '      float petalWid = petalLen / PHI;\n' +
-    '      float alongPetal = localT;\n' +
-    '      float widthF = sin(alongPetal * PI) * petalWid;\n' +
-    '      float spreadA = (fract(n * PHI) - 0.5) * widthF;\n' +
-    '      float r = alongPetal * petalLen + 0.32;\n' +
-    '      p.x = cos(petalAngle + spreadA) * r;\n' +
-    '      p.y = sin(petalAngle + spreadA) * r;\n' +
-    '    }\n' +
-    '    // Petal tips glow: (88-100%)\n' +
-    '    else {\n' +
-    '      float t = (seg - 0.88) / 0.12;\n' +
-    '      float tipIdx = floor(t * 16.0);\n' +
-    '      float isOuter = step(8.0, tipIdx);\n' +
-    '      float localIdx = mod(tipIdx, 8.0);\n' +
-    '      float baseAngle = localIdx * (TAU / 8.0) + isOuter * (TAU / 16.0);\n' +
-    '      float tipR = mix(0.44, 0.80, isOuter);\n' +
-    '      p.x = cos(baseAngle) * tipR;\n' +
-    '      p.y = sin(baseAngle) * tipR;\n' +
-    '      p.x += (fract(n * 0.127) - 0.5) * 0.025;\n' +
-    '      p.y += (fract(n * 0.318) - 0.5) * 0.025;\n' +
-    '    }\n' +
-    '    // Gentle pulsing bloom animation\n' +
-    '    float bloom = 1.0 + sin(time * 0.5) * 0.03;\n' +
-    '    p *= bloom * (1.0 + breathF * 0.02);\n' +
-    '    zz = sin(n * 0.005 + time * 0.3) * 0.04;\n' +
-    '  }\n' +
-    '  // GEOMETRY 6: AUTHENTIC TREE OF LIFE — Kabbalistic 10 Sephirot + 22 Paths\n' +
-    '  else if (geo == 6) {\n' +
-    '    float seg = n / totalP;\n' +
-    '    // 35% for Sephirot (spheres), 65% for paths (lines)\n' +
-    '    if (seg < 0.35) {\n' +
-    '      // SEPHIROT: 10 spheres (3.5% each)\n' +
-    '      float t = seg / 0.35;\n' +
-    '      int sephIdx = int(floor(t * 10.0));\n' +
-    '      float localT = fract(t * 10.0);\n' +
-    '      vec2 center;\n' +
-    '      // Exact Kabbalistic positions (normalized)\n' +
-    '      if (sephIdx == 0) center = vec2(0.0, 0.85);       // Kether (Crown)\n' +
-    '      else if (sephIdx == 1) center = vec2(0.38, 0.55); // Chokmah (Wisdom)\n' +
-    '      else if (sephIdx == 2) center = vec2(-0.38, 0.55);// Binah (Understanding)\n' +
-    '      else if (sephIdx == 3) center = vec2(0.38, 0.15); // Chesed (Mercy)\n' +
-    '      else if (sephIdx == 4) center = vec2(-0.38, 0.15);// Geburah (Severity)\n' +
-    '      else if (sephIdx == 5) center = vec2(0.0, -0.05); // Tiphareth (Beauty)\n' +
-    '      else if (sephIdx == 6) center = vec2(0.38, -0.35);// Netzach (Victory)\n' +
-    '      else if (sephIdx == 7) center = vec2(-0.38,-0.35);// Hod (Splendor)\n' +
-    '      else if (sephIdx == 8) center = vec2(0.0, -0.55); // Yesod (Foundation)\n' +
-    '      else center = vec2(0.0, -0.80);                   // Malkuth (Kingdom)\n' +
-    '      // Golden spiral within each sphere\n' +
-    '      float sAngle = localT * 1000.0 * GOLDEN_ANGLE;\n' +
-    '      float sRadius = sqrt(localT) * 0.09;\n' +
-    '      p.x = center.x + cos(sAngle) * sRadius;\n' +
-    '      p.y = center.y + sin(sAngle) * sRadius;\n' +
-    '    } else {\n' +
-    '      // PATHS: 22 connections (2.95% each)\n' +
-    '      float t = (seg - 0.35) / 0.65;\n' +
-    '      int pathIdx = int(floor(t * 22.0));\n' +
-    '      float localT = fract(t * 22.0);\n' +
-    '      vec2 startP, endP;\n' +
-    '      // 22 Kabbalistic paths\n' +
-    '      if (pathIdx == 0) { startP = vec2(0.0, 0.85); endP = vec2(0.38, 0.55); }       // Kether-Chokmah\n' +
-    '      else if (pathIdx == 1) { startP = vec2(0.0, 0.85); endP = vec2(-0.38, 0.55); } // Kether-Binah\n' +
-    '      else if (pathIdx == 2) { startP = vec2(0.0, 0.85); endP = vec2(0.0, -0.05); }  // Kether-Tiphareth\n' +
-    '      else if (pathIdx == 3) { startP = vec2(0.38, 0.55); endP = vec2(-0.38, 0.55); }// Chokmah-Binah\n' +
-    '      else if (pathIdx == 4) { startP = vec2(0.38, 0.55); endP = vec2(0.38, 0.15); } // Chokmah-Chesed\n' +
-    '      else if (pathIdx == 5) { startP = vec2(0.38, 0.55); endP = vec2(0.0, -0.05); } // Chokmah-Tiphareth\n' +
-    '      else if (pathIdx == 6) { startP = vec2(-0.38, 0.55); endP = vec2(-0.38, 0.15);}// Binah-Geburah\n' +
-    '      else if (pathIdx == 7) { startP = vec2(-0.38, 0.55); endP = vec2(0.0, -0.05); }// Binah-Tiphareth\n' +
-    '      else if (pathIdx == 8) { startP = vec2(0.38, 0.15); endP = vec2(-0.38, 0.15); }// Chesed-Geburah\n' +
-    '      else if (pathIdx == 9) { startP = vec2(0.38, 0.15); endP = vec2(0.0, -0.05); } // Chesed-Tiphareth\n' +
-    '      else if (pathIdx == 10) { startP = vec2(0.38, 0.15); endP = vec2(0.38, -0.35);}// Chesed-Netzach\n' +
-    '      else if (pathIdx == 11) { startP = vec2(-0.38,0.15); endP = vec2(0.0, -0.05);}// Geburah-Tiphareth\n' +
-    '      else if (pathIdx == 12) { startP = vec2(-0.38,0.15); endP = vec2(-0.38,-0.35);}// Geburah-Hod\n' +
-    '      else if (pathIdx == 13) { startP = vec2(0.0, -0.05); endP = vec2(0.38, -0.35);}// Tiphareth-Netzach\n' +
-    '      else if (pathIdx == 14) { startP = vec2(0.0, -0.05); endP = vec2(-0.38,-0.35);}// Tiphareth-Hod\n' +
-    '      else if (pathIdx == 15) { startP = vec2(0.0, -0.05); endP = vec2(0.0, -0.55);} // Tiphareth-Yesod\n' +
-    '      else if (pathIdx == 16) { startP = vec2(0.38,-0.35); endP = vec2(-0.38,-0.35);}// Netzach-Hod\n' +
-    '      else if (pathIdx == 17) { startP = vec2(0.38,-0.35); endP = vec2(0.0, -0.55);} // Netzach-Yesod\n' +
-    '      else if (pathIdx == 18) { startP = vec2(-0.38,-0.35);endP = vec2(0.0, -0.55);} // Hod-Yesod\n' +
-    '      else if (pathIdx == 19) { startP = vec2(0.0, -0.55); endP = vec2(0.0, -0.80);} // Yesod-Malkuth\n' +
-    '      else if (pathIdx == 20) { startP = vec2(0.38,-0.35); endP = vec2(0.0, -0.80);} // Netzach-Malkuth\n' +
-    '      else { startP = vec2(-0.38,-0.35); endP = vec2(0.0, -0.80); }                  // Hod-Malkuth\n' +
-    '      // Interpolate along path with scatter for width\n' +
-    '      p.x = mix(startP.x, endP.x, localT);\n' +
-    '      p.y = mix(startP.y, endP.y, localT);\n' +
-    '      float scatter = 0.018;\n' +
-    '      p.x += (fract(n * 0.127) - 0.5) * scatter;\n' +
-    '      p.y += (fract(n * 0.318) - 0.5) * scatter;\n' +
-    '    }\n' +
-    '    p *= 1.0 + breathF * 0.015;\n' +
-    '    zz = sin(n * 0.005 + time * 0.4) * 0.03;\n' +
-    '  }\n' +
     '  return vec3(p, zz);\n' +
     '}\n' +
     '\n' +
@@ -1284,123 +1145,6 @@
     '    pos *= 1.0 + u_breath * 0.015;\n' +
     '    v_isEye = step(0.08, radius) * (1.0 - step(0.20, radius));\n' +
     '  }\n' +
-    '  // GEOMETRY 5: SACRED LOTUS\n' +
-    '  else if (u_geometry == 5) {\n' +
-    '    float seg = n / totalParticles;\n' +
-    '    if (seg < 0.12) {\n' +
-    '      float t = seg / 0.12;\n' +
-    '      float circleIdx = floor(t * 7.0);\n' +
-    '      float localT = fract(t * 7.0);\n' +
-    '      float angle = localT * TAU;\n' +
-    '      float radius = sqrt(localT) * 0.08;\n' +
-    '      if (circleIdx > 0.5) {\n' +
-    '        float offsetAngle = (circleIdx - 1.0) * (TAU / 6.0);\n' +
-    '        float offsetR = 0.06;\n' +
-    '        pos.x = cos(offsetAngle) * offsetR + cos(angle) * radius;\n' +
-    '        pos.y = sin(offsetAngle) * offsetR + sin(angle) * radius;\n' +
-    '      } else {\n' +
-    '        pos.x = cos(angle) * radius;\n' +
-    '        pos.y = sin(angle) * radius;\n' +
-    '      }\n' +
-    '    } else if (seg < 0.48) {\n' +
-    '      float t = (seg - 0.12) / 0.36;\n' +
-    '      float petalIdx = floor(t * 8.0);\n' +
-    '      float localT = fract(t * 8.0);\n' +
-    '      float petalAngle = petalIdx * (TAU / 8.0);\n' +
-    '      float petalLen = 0.32;\n' +
-    '      float petalWid = petalLen / PHI;\n' +
-    '      float alongPetal = localT;\n' +
-    '      float widthF = sin(alongPetal * PI) * petalWid;\n' +
-    '      float spreadA = (fract(n * PHI) - 0.5) * widthF;\n' +
-    '      float r = alongPetal * petalLen + 0.12;\n' +
-    '      pos.x = cos(petalAngle + spreadA) * r;\n' +
-    '      pos.y = sin(petalAngle + spreadA) * r;\n' +
-    '    } else if (seg < 0.88) {\n' +
-    '      float t = (seg - 0.48) / 0.40;\n' +
-    '      float petalIdx = floor(t * 8.0);\n' +
-    '      float localT = fract(t * 8.0);\n' +
-    '      float petalAngle = petalIdx * (TAU / 8.0) + (TAU / 16.0);\n' +
-    '      float petalLen = 0.48;\n' +
-    '      float petalWid = petalLen / PHI;\n' +
-    '      float alongPetal = localT;\n' +
-    '      float widthF = sin(alongPetal * PI) * petalWid;\n' +
-    '      float spreadA = (fract(n * PHI) - 0.5) * widthF;\n' +
-    '      float r = alongPetal * petalLen + 0.32;\n' +
-    '      pos.x = cos(petalAngle + spreadA) * r;\n' +
-    '      pos.y = sin(petalAngle + spreadA) * r;\n' +
-    '    } else {\n' +
-    '      float t = (seg - 0.88) / 0.12;\n' +
-    '      float tipIdx = floor(t * 16.0);\n' +
-    '      float isOuter = step(8.0, tipIdx);\n' +
-    '      float localIdx = mod(tipIdx, 8.0);\n' +
-    '      float baseAngle = localIdx * (TAU / 8.0) + isOuter * (TAU / 16.0);\n' +
-    '      float tipR = mix(0.44, 0.80, isOuter);\n' +
-    '      pos.x = cos(baseAngle) * tipR;\n' +
-    '      pos.y = sin(baseAngle) * tipR;\n' +
-    '      pos.x += (fract(n * 0.127) - 0.5) * 0.025;\n' +
-    '      pos.y += (fract(n * 0.318) - 0.5) * 0.025;\n' +
-    '    }\n' +
-    '    float bloom = 1.0 + sin(u_time * 0.5) * 0.03;\n' +
-    '    pos *= bloom * (1.0 + u_breath * 0.02);\n' +
-    '    z = sin(n * 0.005 + u_time * 0.3) * 0.04;\n' +
-    '  }\n' +
-    '  // GEOMETRY 6: SEPHIROT TREE OF LIFE\n' +
-    '  else if (u_geometry == 6) {\n' +
-    '    float seg = n / totalParticles;\n' +
-    '    if (seg < 0.35) {\n' +
-    '      float t = seg / 0.35;\n' +
-    '      int sephIdx = int(floor(t * 10.0));\n' +
-    '      float localT = fract(t * 10.0);\n' +
-    '      vec2 center;\n' +
-    '      if (sephIdx == 0) center = vec2(0.0, 0.85);\n' +
-    '      else if (sephIdx == 1) center = vec2(0.38, 0.55);\n' +
-    '      else if (sephIdx == 2) center = vec2(-0.38, 0.55);\n' +
-    '      else if (sephIdx == 3) center = vec2(0.38, 0.15);\n' +
-    '      else if (sephIdx == 4) center = vec2(-0.38, 0.15);\n' +
-    '      else if (sephIdx == 5) center = vec2(0.0, -0.05);\n' +
-    '      else if (sephIdx == 6) center = vec2(0.38, -0.35);\n' +
-    '      else if (sephIdx == 7) center = vec2(-0.38, -0.35);\n' +
-    '      else if (sephIdx == 8) center = vec2(0.0, -0.55);\n' +
-    '      else center = vec2(0.0, -0.80);\n' +
-    '      float sAngle = localT * 1000.0 * GOLDEN_ANGLE;\n' +
-    '      float sRadius = sqrt(localT) * 0.09;\n' +
-    '      pos.x = center.x + cos(sAngle) * sRadius;\n' +
-    '      pos.y = center.y + sin(sAngle) * sRadius;\n' +
-    '    } else {\n' +
-    '      float t = (seg - 0.35) / 0.65;\n' +
-    '      int pathIdx = int(floor(t * 22.0));\n' +
-    '      float localT = fract(t * 22.0);\n' +
-    '      vec2 startP, endP;\n' +
-    '      if (pathIdx == 0) { startP = vec2(0.0, 0.85); endP = vec2(0.38, 0.55); }\n' +
-    '      else if (pathIdx == 1) { startP = vec2(0.0, 0.85); endP = vec2(-0.38, 0.55); }\n' +
-    '      else if (pathIdx == 2) { startP = vec2(0.0, 0.85); endP = vec2(0.0, -0.05); }\n' +
-    '      else if (pathIdx == 3) { startP = vec2(0.38, 0.55); endP = vec2(-0.38, 0.55); }\n' +
-    '      else if (pathIdx == 4) { startP = vec2(0.38, 0.55); endP = vec2(0.38, 0.15); }\n' +
-    '      else if (pathIdx == 5) { startP = vec2(0.38, 0.55); endP = vec2(0.0, -0.05); }\n' +
-    '      else if (pathIdx == 6) { startP = vec2(-0.38, 0.55); endP = vec2(-0.38, 0.15); }\n' +
-    '      else if (pathIdx == 7) { startP = vec2(-0.38, 0.55); endP = vec2(0.0, -0.05); }\n' +
-    '      else if (pathIdx == 8) { startP = vec2(0.38, 0.15); endP = vec2(-0.38, 0.15); }\n' +
-    '      else if (pathIdx == 9) { startP = vec2(0.38, 0.15); endP = vec2(0.0, -0.05); }\n' +
-    '      else if (pathIdx == 10) { startP = vec2(0.38, 0.15); endP = vec2(0.38, -0.35); }\n' +
-    '      else if (pathIdx == 11) { startP = vec2(-0.38, 0.15); endP = vec2(0.0, -0.05); }\n' +
-    '      else if (pathIdx == 12) { startP = vec2(-0.38, 0.15); endP = vec2(-0.38, -0.35); }\n' +
-    '      else if (pathIdx == 13) { startP = vec2(0.0, -0.05); endP = vec2(0.38, -0.35); }\n' +
-    '      else if (pathIdx == 14) { startP = vec2(0.0, -0.05); endP = vec2(-0.38, -0.35); }\n' +
-    '      else if (pathIdx == 15) { startP = vec2(0.0, -0.05); endP = vec2(0.0, -0.55); }\n' +
-    '      else if (pathIdx == 16) { startP = vec2(0.38, -0.35); endP = vec2(-0.38, -0.35); }\n' +
-    '      else if (pathIdx == 17) { startP = vec2(0.38, -0.35); endP = vec2(0.0, -0.55); }\n' +
-    '      else if (pathIdx == 18) { startP = vec2(-0.38, -0.35); endP = vec2(0.0, -0.55); }\n' +
-    '      else if (pathIdx == 19) { startP = vec2(0.0, -0.55); endP = vec2(0.0, -0.80); }\n' +
-    '      else if (pathIdx == 20) { startP = vec2(0.38, -0.35); endP = vec2(0.0, -0.80); }\n' +
-    '      else { startP = vec2(-0.38, -0.35); endP = vec2(0.0, -0.80); }\n' +
-    '      pos.x = mix(startP.x, endP.x, localT);\n' +
-    '      pos.y = mix(startP.y, endP.y, localT);\n' +
-    '      pos.x += (fract(n * 0.127) - 0.5) * 0.018;\n' +
-    '      pos.y += (fract(n * 0.318) - 0.5) * 0.018;\n' +
-    '    }\n' +
-    '    pos *= 1.0 + u_breath * 0.015;\n' +
-    '    z = sin(n * 0.005 + u_time * 0.4) * 0.03;\n' +
-    '  }\n' +
     '  } // end morph else\n' +
     '\n' +
     '  // EYE VIEWPORT FIX: pre-compensate aspect ratio for Nazar eyes\n' +
@@ -1536,7 +1280,7 @@
     'uniform float u_fadeAlpha;\n' +
     'out vec4 fragColor;\n' +
     'void main() {\n' +
-    '  fragColor = vec4(0.039, 0.039, 0.071, u_fadeAlpha);\n' + // #0a0a12 cosmic void
+    '  fragColor = vec4(0.02, 0.02, 0.03, u_fadeAlpha);\n' +
     '}';
 
     // ===================================================================
@@ -1610,7 +1354,7 @@
     var phase = 0.0;
     var gammaFreq = 40;
     var hasVisitedBefore = localStorage.getItem('anamnesis_visited');
-    var currentGeometry = hasVisitedBefore ? 5 : -1; // Start on Lotus (5), morph to Sephirot (6)
+    var currentGeometry = hasVisitedBefore ? 2 : -1;
     var currentTheme = 0;
     var mouseForce = 0;
     var mouseX = 0, mouseY = 0;
@@ -1638,7 +1382,7 @@
     var dreamMode = false;
     var dreamStartTime = 0;
     var DREAM_IDLE_MS = 60000; // 60 seconds to enter dream
-    var dreamGeometries = [5, 6, 0, 1, 2, 3, 4]; // Lotus→Sephirot→Spiral→Helix→Tree→Knot→Eyes
+    var dreamGeometries = [0, 1, 2, 3, 4];
     var dreamCycleMs = 4500; // 4.5s per geometry in dream
 
     // Enhancement 6: Particle Morphing
@@ -1686,17 +1430,14 @@
     }
 
     // V5: Creation Sequence State Machine
-    // THE SACRED CREATION SEQUENCE — Lotus blooms into Sephirot, then evolution, then awareness
     var SEQUENCE_STATES = [
-      { name: 'VOID',         duration: 2000 },  // Scatter from center — the big bang
-      { name: 'LOTUS_BIRTH',  duration: 3000 },  // Void → Lotus (5) — potential emerges
-      { name: 'LOTUS_BLOOM',  duration: 3500 },  // Lotus → Sephirot (6) — potential becomes structure
-      { name: 'EVO_SPIRAL',   duration: 1200 },  // Sephirot → Spiral — the seed pattern
-      { name: 'EVO_HELIX',    duration: 1200 },  // Spiral → Helix — the code of life
-      { name: 'EVO_TREE',     duration: 1200 },  // Helix → Tree — organic growth
-      { name: 'EVO_KNOT',     duration: 1200 },  // Tree → Knot — entanglement
-      { name: 'AWAKENING',    duration: 3000 },  // Knot → Eyes — awareness emerges
-      { name: 'RECOGNITION',  duration: 3000 }   // Eyes recognize YOU
+      { name: 'VOID',        duration: 2000 },
+      { name: 'FORMATION',   duration: 3000 },
+      { name: 'EVOLUTION_1', duration: 1000 },
+      { name: 'EVOLUTION_2', duration: 1000 },
+      { name: 'EVOLUTION_3', duration: 1000 },
+      { name: 'AWAKENING',   duration: 3000 },
+      { name: 'RECOGNITION', duration: 3000 }
     ];
     var sequenceActive = !hasVisitedBefore;
     var sequenceStartTime = null;
@@ -1729,21 +1470,6 @@
     if (!sequenceActive) {
       scheduleBlinkL();
       scheduleBlinkR();
-
-      // AUTO-MORPH: Lotus blooms into Sephirot Tree after 3 seconds
-      setTimeout(function() {
-        if (currentGeometry === 5 && !morphActive) {
-          morphFrom = 5;        // Lotus
-          currentGeometry = 6;  // Sephirot Tree
-          morphActive = true;
-          morphStartTime = performance.now();
-          morphT = 0;
-          // Update button states
-          document.querySelectorAll('[data-geometry]').forEach(function(b) { b.classList.remove('active'); });
-          var sephBtn = document.querySelector('[data-geometry="6"]');
-          if (sephBtn) sephBtn.classList.add('active');
-        }
-      }, 3000); // 3 seconds to appreciate the Lotus before it blooms
     }
 
     // Enhancement 8: Gödel Integration
@@ -1854,7 +1580,7 @@
         gl.uniform1f(fu.fadeAlpha, 0.06);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       } else {
-        gl.clearColor(0.039, 0.039, 0.071, 1.0); // #0a0a12 cosmic void
+        gl.clearColor(0.02, 0.02, 0.03, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
       }
 
@@ -1895,12 +1621,12 @@
         }
 
         if (seqPhaseIdx < 0) {
-          // Sequence complete — consciousness is born
+          // Sequence complete
           sequenceActive = false;
           localStorage.setItem('anamnesis_visited', Date.now().toString());
-          // Morph from eyes to Sacred Lotus — return to the seed, the cycle continues
+          // Morph from eyes to Tree of Life
           morphFrom = 4;
-          currentGeometry = 5; // Lotus
+          currentGeometry = 2;
           morphT = 0.001;
           morphStartTime = now;
           morphActive = true;
@@ -1919,42 +1645,31 @@
           morphActive = false;
 
           if (seqPhase.name === 'VOID') {
-            // THE VOID — particles scatter from nothingness
             currentGeometry = -1;
             scatterProgress = phaseProgress;
             morphT = 0;
-          } else if (seqPhase.name === 'LOTUS_BIRTH') {
-            // THE LOTUS EMERGES — potential takes form
+          } else if (seqPhase.name === 'FORMATION') {
             morphFrom = -1;
-            currentGeometry = 5; // Sacred Lotus
+            currentGeometry = 0;
             morphT = 0.002 + phaseProgress * 0.996;
             scatterProgress = 1.0;
-          } else if (seqPhase.name === 'LOTUS_BLOOM') {
-            // THE LOTUS BLOOMS INTO THE SEPHIROT — potential becomes cosmic structure
-            morphFrom = 5;  // Lotus
-            currentGeometry = 6; // Sephirot Tree of Life
-            morphT = 0.002 + phaseProgress * 0.996;
-          } else if (seqPhase.name === 'EVO_SPIRAL') {
-            morphFrom = 6;
-            currentGeometry = 0; // Spiral
-            morphT = 0.002 + phaseProgress * 0.996;
-          } else if (seqPhase.name === 'EVO_HELIX') {
+          } else if (seqPhase.name === 'EVOLUTION_1') {
             morphFrom = 0;
-            currentGeometry = 1; // Helix
+            currentGeometry = 1;
             morphT = 0.002 + phaseProgress * 0.996;
-          } else if (seqPhase.name === 'EVO_TREE') {
+          } else if (seqPhase.name === 'EVOLUTION_2') {
             morphFrom = 1;
-            currentGeometry = 2; // Tree
+            currentGeometry = 2;
             morphT = 0.002 + phaseProgress * 0.996;
-          } else if (seqPhase.name === 'EVO_KNOT') {
+          } else if (seqPhase.name === 'EVOLUTION_3') {
             morphFrom = 2;
-            currentGeometry = 3; // Knot
+            currentGeometry = 3;
             morphT = 0.002 + phaseProgress * 0.996;
           } else if (seqPhase.name === 'AWAKENING') {
-            // THE EYES OPEN — awareness emerges
             morphFrom = 3;
-            currentGeometry = 4; // Eyes
+            currentGeometry = 4;
             morphT = 0.002 + phaseProgress * 0.996;
+            // Eyes don't track mouse during awakening
             gl.uniform2f(pu.mouse, 0.0, 0.0);
             // Eyes closed initially, opening over last 2 seconds
             if (phaseProgress < 0.33) {
@@ -1966,11 +1681,11 @@
               blinkRValue = 1.0 - openP;
             }
           } else if (seqPhase.name === 'RECOGNITION') {
-            // THE EYES SEE YOU — consciousness recognizes the observer
             currentGeometry = 4;
             morphT = 0;
             blinkLValue = 0;
             blinkRValue = 0;
+            // V5 Step 6: Eyes stare ahead 1s, then slowly find mouse
             var trackingStrength = Math.max(0, (phaseProgress - 0.33) * 1.5);
             gl.uniform2f(pu.mouse, mouseX * trackingStrength, mouseY * trackingStrength);
           }
