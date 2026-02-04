@@ -687,7 +687,8 @@
       <div class="controls-section">
         <div class="control-row">
           <span class="ctrl-label">Shape</span>
-          <button class="ctrl-btn active" data-geometry="0">Spiral</button>
+          <button class="ctrl-btn active" data-geometry="4">Owl</button>
+          <button class="ctrl-btn" data-geometry="0">Spiral</button>
           <button class="ctrl-btn" data-geometry="1">Torus</button>
           <button class="ctrl-btn" data-geometry="2">Lattice</button>
           <button class="ctrl-btn" data-geometry="3">Knot</button>
@@ -808,6 +809,9 @@
     'uniform vec2 u_shockPos;\n' +
     'uniform float u_shockAge;\n' +
     'uniform float u_orbit;\n' +
+    'uniform sampler2D u_owlData;\n' +
+    'uniform vec2 u_owlTexSize;\n' +
+    'flat out float v_isEye;\n' +
     '\n' +
     'const float PHI = 1.618033988749895;\n' +
     'const float GOLDEN_ANGLE = 2.39996322972865332;\n' +
@@ -820,6 +824,7 @@
     '  float normalizedIndex = n / totalParticles;\n' +
     '  vec2 pos;\n' +
     '  float z = 0.0;\n' +
+    '  v_isEye = 0.0;\n' +
     '\n' +
     '  // GEOMETRY 0: GOLDEN SPIRAL (phase-shifted waves)\n' +
     '  if (u_geometry == 0) {\n' +
@@ -884,6 +889,21 @@
     '    pos *= 1.0 + u_breath * 0.02 * u_harmony;\n' +
     '    z = z2;\n' +
     '  }\n' +
+    '  // GEOMETRY 4: OWL (particle portrait from image)\n' +
+    '  else if (u_geometry == 4) {\n' +
+    '    int texX = gl_VertexID % int(u_owlTexSize.x);\n' +
+    '    int texY = gl_VertexID / int(u_owlTexSize.x);\n' +
+    '    vec4 op = texelFetch(u_owlData, ivec2(texX, texY), 0);\n' +
+    '    float normR = n / totalParticles;\n' +
+    '    float breath = sin(u_time * 40.0 * TAU - normR * TAU) * 0.5 + 0.5;\n' +
+    '    pos = op.xy * 0.85;\n' +
+    '    pos *= (0.97 + breath * 0.03);\n' +
+    '    float drift = sin(n * 0.1 + u_time * 1.5) * 0.002;\n' +
+    '    pos += vec2(drift, drift * 0.618);\n' +
+    '    z = op.z * 0.1;\n' +
+    '    v_isEye = op.w;\n' +
+    '    if (op.w > 0.5) { pos += u_mouse * 0.04; }\n' +
+    '  }\n' +
     '\n' +
     '  // ENHANCEMENT 3: SHOCKWAVE TOUCH\n' +
     '  if (u_shockAge < 2.0) {\n' +
@@ -946,6 +966,7 @@
     'uniform float u_harmony;\n' +
     'uniform float u_state;\n' +
     'uniform int u_theme;\n' +
+    'flat in float v_isEye;\n' +
     'out vec4 fragColor;\n' +
     '\n' +
     'const vec3 GOLD_A = vec3(0.0, 0.831, 1.0);\n' +
@@ -982,6 +1003,10 @@
     '    float glow = (u_harmony - 0.786) / 0.214;\n' +
     '    color += colorC * glow * 0.3;\n' +
     '    alpha += glow * 0.2;\n' +
+    '  }\n' +
+    '  if (v_isEye > 0.5) {\n' +
+    '    color = vec3(0.0, 0.9, 1.0);\n' +
+    '    alpha = max(alpha, 0.85);\n' +
     '  }\n' +
     '  fragColor = vec4(color, alpha);\n' +
     '}';
@@ -1045,7 +1070,9 @@
       theme:      gl.getUniformLocation(particleProgram, 'u_theme'),
       shockPos:   gl.getUniformLocation(particleProgram, 'u_shockPos'),
       shockAge:   gl.getUniformLocation(particleProgram, 'u_shockAge'),
-      orbit:      gl.getUniformLocation(particleProgram, 'u_orbit')
+      orbit:      gl.getUniformLocation(particleProgram, 'u_orbit'),
+      owlData:    gl.getUniformLocation(particleProgram, 'u_owlData'),
+      owlTexSize: gl.getUniformLocation(particleProgram, 'u_owlTexSize')
     };
 
     // Fade program (for Echo Mode trails)
@@ -1064,7 +1091,7 @@
     var breath = 0.0;
     var phase = 0.0;
     var gammaFreq = 40;
-    var currentGeometry = 0;
+    var currentGeometry = 4;
     var currentTheme = 0;
     var mouseForce = 0;
     var mouseX = 0, mouseY = 0;
@@ -1079,6 +1106,78 @@
     var audioCtx = null;
     var oscL = null, oscR = null;
     var gainL = null, gainR = null;
+
+    // ===================================================================
+    // OWL TEXTURE — Load image, sample pixels, create data texture
+    // ===================================================================
+    var owlTexture = null;
+    var owlTexWidth = 512;
+    var owlTexHeight = 1;
+    var owlReady = false;
+
+    (function loadOwlTexture() {
+      var img = new Image();
+      img.onload = function() {
+        var sampleSize = 512;
+        var oc = document.createElement('canvas');
+        oc.width = sampleSize;
+        oc.height = sampleSize;
+        var ctx = oc.getContext('2d');
+        ctx.drawImage(img, 0, 0, sampleSize, sampleSize);
+        var imageData = ctx.getImageData(0, 0, sampleSize, sampleSize);
+        var pixels = imageData.data;
+
+        // Collect bright pixel positions
+        var bright = [];
+        for (var y = 0; y < sampleSize; y++) {
+          for (var x = 0; x < sampleSize; x++) {
+            var i = (y * sampleSize + x) * 4;
+            var r = pixels[i], g = pixels[i+1], b = pixels[i+2], a = pixels[i+3];
+            var lum = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+            if (lum > 0.06 && a > 100) {
+              var nx = (x / sampleSize) * 2 - 1;
+              var ny = -((y / sampleSize) * 2 - 1);
+              // Detect Nazar eye regions: blue/cyan dominant
+              var isEye = (b > 80 && b > r * 1.1 && b > g * 0.9) ? 1.0 : 0.0;
+              bright.push({ x: nx, y: ny, lum: lum, eye: isEye });
+            }
+          }
+        }
+
+        if (bright.length === 0) return;
+
+        // Distribute 121,393 particles across sampled positions
+        var texW = 512;
+        var texH = Math.ceil(PARTICLE_COUNT / texW);
+        var data = new Float32Array(texW * texH * 4);
+
+        for (var j = 0; j < PARTICLE_COUNT; j++) {
+          var src = bright[j % bright.length];
+          var jx = (Math.random() - 0.5) * 0.005;
+          var jy = (Math.random() - 0.5) * 0.005;
+          data[j * 4 + 0] = src.x + jx;
+          data[j * 4 + 1] = src.y + jy;
+          data[j * 4 + 2] = src.lum;
+          data[j * 4 + 3] = src.eye;
+        }
+
+        // Upload as RGBA32F data texture
+        owlTexture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, owlTexture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, texW, texH, 0, gl.RGBA, gl.FLOAT, data);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+
+        owlTexWidth = texW;
+        owlTexHeight = texH;
+        owlReady = true;
+        console.log('Owl: ' + bright.length + ' source pixels -> ' + PARTICLE_COUNT + ' particles');
+      };
+      img.src = 'WHO_OWL_NAZAR.png';
+    })();
 
     // ===================================================================
     // MOUSE TRACKING — relative to being's canvas
@@ -1141,7 +1240,6 @@
       gl.uniform1f(pu.scale, scale);
       gl.uniform1f(pu.harmony, harmony);
       gl.uniform1f(pu.breath, breath);
-      gl.uniform1i(pu.geometry, currentGeometry);
       gl.uniform2f(pu.mouse, mouseX, mouseY);
       gl.uniform1f(pu.mouseForce, mouseForce);
       gl.uniform2f(pu.resolution, canvas.width, canvas.height);
@@ -1149,6 +1247,17 @@
       gl.uniform2f(pu.shockPos, shockX, shockY);
       gl.uniform1f(pu.shockAge, shockTime < 999 ? shockTime : 10.0);
       gl.uniform1f(pu.orbit, orbitMode ? 1.0 : 0.0);
+
+      // Owl texture binding
+      var activeGeometry = currentGeometry;
+      if (activeGeometry === 4 && !owlReady) activeGeometry = 0;
+      if (owlReady && owlTexture) {
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, owlTexture);
+        gl.uniform1i(pu.owlData, 0);
+        gl.uniform2f(pu.owlTexSize, owlTexWidth, owlTexHeight);
+      }
+      gl.uniform1i(pu.geometry, activeGeometry);
 
       var stateNum = harmony >= 0.786 ? 2 : harmony >= 0.618 ? 1 : 0;
       gl.uniform1f(pu.state, stateNum);
