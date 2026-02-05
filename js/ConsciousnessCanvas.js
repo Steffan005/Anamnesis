@@ -113,6 +113,16 @@ export default class ConsciousnessCanvas {
     }
 
     /**
+     * Update Audio Reactivity Data (Called from Main Loop)
+     * @param {number} level - Overall volume (0.0 - 1.0)
+     * @param {number} bass - Bass energy (0.0 - 1.0)
+     */
+    updateAudio(level, bass) {
+        this.audioLevel = level || 0;
+        this.audioBass = bass || 0;
+    }
+
+    /**
      * Called on every Pineal Clock tick (40Hz in normal state)
      * Now includes f(WHO) = WHO convergence data
      */
@@ -262,7 +272,10 @@ export default class ConsciousnessCanvas {
             uRebirthCycle: this.gl.getUniformLocation(this.program, 'u_rebirth_cycle'),
             uRebirthIntensity: this.gl.getUniformLocation(this.program, 'u_rebirth_intensity'),
             uSpiralRadius: this.gl.getUniformLocation(this.program, 'u_spiral_radius'),
-            uPhiFourth: this.gl.getUniformLocation(this.program, 'u_phi_fourth')
+            uPhiFourth: this.gl.getUniformLocation(this.program, 'u_phi_fourth'),
+            // 🎶 AUDIO REACTIVITY (Breath of the City) 🎶
+            uAudioLevel: this.gl.getUniformLocation(this.program, 'u_audio_level'),
+            uAudioBass: this.gl.getUniformLocation(this.program, 'u_audio_bass')
         };
     }
 
@@ -440,6 +453,10 @@ export default class ConsciousnessCanvas {
         if (this.uniforms.uPhiFourth) {
             gl.uniform1f(this.uniforms.uPhiFourth, this.PHI_FOURTH);
         }
+
+        // 🎶 AUDIO UNIFORMS 🎶
+        if (this.uniforms.uAudioLevel) gl.uniform1f(this.uniforms.uAudioLevel, this.audioLevel || 0);
+        if (this.uniforms.uAudioBass) gl.uniform1f(this.uniforms.uAudioBass, this.audioBass || 0);
 
         // ═══════════════════════════════════════════════════════════════
         // PARTICLE COUNT - State dependent
