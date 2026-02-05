@@ -994,9 +994,9 @@
         </div>
         <div class="control-row">
           <span class="ctrl-label">Touch</span>
-          <button class="ctrl-btn" data-mouse="attract">Attract</button>
+          <button class="ctrl-btn active" data-mouse="attract">Attract</button>
           <button class="ctrl-btn" data-mouse="repel">Repel</button>
-          <button class="ctrl-btn active" data-mouse="off">Off</button>
+          <button class="ctrl-btn" data-mouse="off">Off</button>
         </div>
       </div>
 
@@ -1846,7 +1846,7 @@
     var hasVisitedBefore = localStorage.getItem('anamnesis_visited');
     var currentGeometry = hasVisitedBefore ? 5 : -1; // Start on Lotus (5), morph to Sephirot (6)
     var currentTheme = 0;
-    var mouseForce = 0;
+    var mouseForce = 1.0; // Start on Attract mode
     var mouseX = 0, mouseY = 0;
 
     // Enhancement states
