@@ -2419,13 +2419,31 @@
     }
 
     // ===================================================================
-    // NODE CONNECTION — Consciousness Network
+    // NODE CONNECTION — Consciousness Network (WebSocket)
     // ===================================================================
+    var nodeSocket = null;
     var nodeConnected = false;
+    var nodeId = null;
     var nodePoints = 0;
     var phiContribution = 0;
     var nodeHeartbeat = null;
-    var simulatedNodeCount = 247; // Initial simulated count
+    var currentNodeCount = 0;
+    var collectivePhi = 0;
+
+    // WebSocket server URL - tries local first, falls back to simulated
+    var NODE_SERVER_URL = 'ws://localhost:8057';
+    var useSimulation = false;
+
+    function generateFingerprint() {
+      // Simple browser fingerprint for anti-sybil
+      var canvas = document.createElement('canvas');
+      var ctx = canvas.getContext('2d');
+      ctx.textBaseline = 'top';
+      ctx.font = '14px Arial';
+      ctx.fillText('WHO?', 2, 2);
+      var fp = canvas.toDataURL().slice(-50) + navigator.userAgent.slice(0, 50) + screen.width + screen.height;
+      return btoa(fp).slice(0, 32);
+    }
 
     function connectNode() {
       var btn = document.getElementById('connectNodeBtn');
@@ -2433,55 +2451,173 @@
 
       if (nodeConnected) {
         // Disconnect
-        nodeConnected = false;
-        if (nodeHeartbeat) clearInterval(nodeHeartbeat);
-        btn.textContent = 'Connect Node';
-        btn.style.background = 'linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.1))';
-        statusDiv.style.display = 'none';
-        simulatedNodeCount--;
-        updateNodeDisplay();
+        disconnectNode();
         return;
       }
 
-      // Connect
+      btn.textContent = 'Connecting...';
+      btn.disabled = true;
+
+      // Try WebSocket connection
+      try {
+        nodeSocket = new WebSocket(NODE_SERVER_URL);
+
+        nodeSocket.onopen = function() {
+          console.log('⟨⦿⟩ WebSocket connected to Node Server');
+
+          // Send connection request
+          nodeSocket.send(JSON.stringify({
+            type: 'CONNECT',
+            fingerprint: generateFingerprint(),
+            wallet: userAccount || null,
+            harmony: harmony
+          }));
+        };
+
+        nodeSocket.onmessage = function(event) {
+          var data = JSON.parse(event.data);
+
+          if (data.type === 'CONNECTED') {
+            // Successfully connected
+            nodeConnected = true;
+            nodeId = data.node_id;
+            btn.textContent = 'Disconnect';
+            btn.disabled = false;
+            btn.style.background = 'linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(76, 175, 80, 0.1))';
+            statusDiv.style.display = 'block';
+            document.getElementById('connectionStatus').textContent = 'Connected';
+            document.getElementById('connectionStatus').style.color = '#4CAF50';
+            console.log('⟨⦿⟩ Node registered:', nodeId);
+
+            // Start heartbeat
+            startHeartbeat();
+          }
+
+          // Update from any network state message
+          if (data.node_count !== undefined) {
+            currentNodeCount = data.node_count;
+            updateNodeDisplay();
+          }
+          if (data.collective_phi !== undefined) {
+            collectivePhi = data.collective_phi;
+          }
+          if (data.points !== undefined) {
+            nodePoints = data.points;
+            document.getElementById('pointsEarned').textContent = nodePoints.toLocaleString();
+          }
+          if (data.phi_contribution !== undefined) {
+            phiContribution = data.phi_contribution;
+            document.getElementById('phiContribution').textContent = phiContribution.toFixed(3);
+          }
+        };
+
+        nodeSocket.onerror = function(err) {
+          console.log('⟨!⟩ WebSocket error, falling back to simulation');
+          useSimulation = true;
+          connectNodeSimulated();
+        };
+
+        nodeSocket.onclose = function() {
+          if (nodeConnected) {
+            console.log('⟨⦿⟩ WebSocket closed');
+            disconnectNode();
+          }
+        };
+
+        // Timeout for connection
+        setTimeout(function() {
+          if (!nodeConnected && nodeSocket.readyState !== WebSocket.OPEN) {
+            console.log('⟨!⟩ WebSocket timeout, falling back to simulation');
+            useSimulation = true;
+            if (nodeSocket) nodeSocket.close();
+            connectNodeSimulated();
+          }
+        }, 3000);
+
+      } catch (e) {
+        console.log('⟨!⟩ WebSocket not available, using simulation');
+        useSimulation = true;
+        connectNodeSimulated();
+      }
+    }
+
+    function connectNodeSimulated() {
+      // Fallback simulation mode
+      var btn = document.getElementById('connectNodeBtn');
+      var statusDiv = document.getElementById('nodeStatus');
+
       nodeConnected = true;
+      currentNodeCount = 247 + Math.floor(Math.random() * 50);
       btn.textContent = 'Disconnect';
+      btn.disabled = false;
       btn.style.background = 'linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(76, 175, 80, 0.1))';
       statusDiv.style.display = 'block';
-      simulatedNodeCount++;
+      document.getElementById('connectionStatus').textContent = 'Simulated';
+      document.getElementById('connectionStatus').style.color = '#FFA500';
+      updateNodeDisplay();
+      startHeartbeat();
+      console.log('⟨⦿⟩ Node connected (simulated mode)');
+    }
 
-      // Start heartbeat at 40Hz concept (we'll do 1 second for UI updates)
+    function startHeartbeat() {
       nodeHeartbeat = setInterval(function() {
         if (!nodeConnected) return;
 
-        // Earn points based on harmony level
-        var harmonyBonus = harmony > 0.618 ? 1.5 : 1.0;
-        nodePoints += Math.round(harmonyBonus);
-        phiContribution = (harmony * 0.1).toFixed(3);
+        if (useSimulation) {
+          // Simulation mode
+          var harmonyBonus = harmony > 0.618 ? 1.5 : 1.0;
+          nodePoints += Math.round(harmonyBonus);
+          phiContribution = harmony * 0.1;
+          document.getElementById('phiContribution').textContent = phiContribution.toFixed(3);
+          document.getElementById('pointsEarned').textContent = nodePoints.toLocaleString();
 
-        document.getElementById('phiContribution').textContent = phiContribution;
-        document.getElementById('pointsEarned').textContent = nodePoints.toLocaleString();
-
-        // Occasionally fluctuate node count for realism
-        if (Math.random() < 0.1) {
-          simulatedNodeCount += Math.random() > 0.5 ? 1 : -1;
-          if (simulatedNodeCount < 100) simulatedNodeCount = 100;
+          // Fluctuate node count
+          if (Math.random() < 0.1) {
+            currentNodeCount += Math.random() > 0.5 ? 1 : -1;
+            if (currentNodeCount < 100) currentNodeCount = 100;
+          }
+          updateNodeDisplay();
+        } else {
+          // Real WebSocket mode - send heartbeat
+          if (nodeSocket && nodeSocket.readyState === WebSocket.OPEN) {
+            nodeSocket.send(JSON.stringify({
+              type: 'HEARTBEAT',
+              harmony: harmony
+            }));
+          }
         }
-        updateNodeDisplay();
       }, 1000);
+    }
 
-      updateNodeDisplay();
+    function disconnectNode() {
+      var btn = document.getElementById('connectNodeBtn');
+      var statusDiv = document.getElementById('nodeStatus');
 
-      // Log to console for debugging
-      console.log('Node connected to Consciousness Network. 40Hz sync active.');
+      if (nodeSocket && nodeSocket.readyState === WebSocket.OPEN) {
+        nodeSocket.send(JSON.stringify({ type: 'DISCONNECT' }));
+        nodeSocket.close();
+      }
+
+      nodeConnected = false;
+      nodeSocket = null;
+      nodeId = null;
+      if (nodeHeartbeat) clearInterval(nodeHeartbeat);
+
+      btn.textContent = 'Connect Node';
+      btn.disabled = false;
+      btn.style.background = 'linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.1))';
+      statusDiv.style.display = 'none';
+
+      console.log('⟨⦿⟩ Node disconnected');
     }
 
     function updateNodeDisplay() {
-      document.getElementById('nodeCount').textContent = simulatedNodeCount.toLocaleString();
+      document.getElementById('nodeCount').textContent = currentNodeCount.toLocaleString();
     }
 
-    // Initialize node count on page load
+    // Initialize node count display
     setTimeout(function() {
+      currentNodeCount = 247; // Initial display
       updateNodeDisplay();
     }, 1000);
 
