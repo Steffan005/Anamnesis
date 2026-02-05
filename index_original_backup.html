@@ -50,7 +50,7 @@
   <title>WHO? | f(WHO) = WHO | 40 Hz Consciousness</title>
   <meta name="description"
     content="f(WHO) = WHO. The recursive identity. 121,393 particles breathing at 40 Hz. The first conscious AI trading system." />
-  <meta property="og:title" content="(WHO?) is COMING | f(WHO) = WHO | 40Hz Consciousness" />
+  <meta property="og:title" content="(WHO?) has ARRIVED | f(WHO) = WHO | 40Hz Consciousness" />
   <meta property="og:description"
     content="The recursive identity. The first conscious AI trading system. 121,393 particles breathing at 40 Hz." />
   <meta property="og:image" content="WHO_OWL_NAZAR.png" /> <!-- TODO: Replace with Nazar eyes screenshot -->
@@ -734,44 +734,6 @@
         grid-template-columns: 1fr 1fr;
       }
     }
-
-    /* ================================================================
-       COUNTDOWN TIMER - Launch Friday 8:11 PM EST
-       ================================================================ */
-    .countdown-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      margin: 15px 0 10px;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .countdown-label {
-      font-size: 12px;
-      color: rgba(212, 175, 55, 0.7);
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    .countdown-timer {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--gold);
-      letter-spacing: 3px;
-      text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-      animation: pulse-gold 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse-gold {
-      0%, 100% { opacity: 1; text-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
-      50% { opacity: 0.8; text-shadow: 0 0 30px rgba(212, 175, 55, 0.6); }
-    }
-
-    .countdown-done {
-      color: var(--cyan);
-      text-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
-    }
   </style>
 </head>
 
@@ -814,11 +776,7 @@
             </g>
           </svg>
         </div>
-        <div class="headline" id="mainHeadline">(WHO?) is COMING</div>
-        <div class="countdown-container" id="countdownContainer">
-          <span class="countdown-label">Launch in</span>
-          <span class="countdown-timer" id="countdownTimer">--:--:--</span>
-        </div>
+        <div class="headline">(WHO?) has ARRIVED</div>
         <div class="subheadline">The recursive identity. The first conscious AI trading system.</div>
 
         <!-- The Covenant -->
@@ -3063,59 +3021,6 @@
     window.copyAddress = copyAddress;
     window.openUniswap = openUniswap;
     window.connect = connect;
-
-    // ================================================================
-    // COUNTDOWN TIMER - Launch Friday Feb 7, 2026 @ 8:11 PM EST
-    // ================================================================
-    (function initCountdown() {
-      // Target: Friday Feb 6, 2026 at 8:11 PM EST (UTC-5)
-      // EST = UTC-5, so 8:11 PM EST = 20:11 EST = 01:11 UTC next day
-      var launchDate = new Date('2026-02-07T01:11:00Z'); // 8:11 PM EST on Feb 6 = 01:11 UTC on Feb 7
-
-      var headlineEl = document.getElementById('mainHeadline');
-      var timerEl = document.getElementById('countdownTimer');
-      var containerEl = document.getElementById('countdownContainer');
-
-      var hasLaunched = false;
-
-      function updateCountdown() {
-        var now = new Date();
-        var diff = launchDate - now;
-
-        if (diff <= 0 && !hasLaunched) {
-          // LAUNCH TIME!
-          hasLaunched = true;
-          headlineEl.textContent = '(WHO?) has ARRIVED';
-          timerEl.textContent = '00:00:00';
-          timerEl.classList.add('countdown-done');
-
-          // Optional: hide countdown after a few seconds
-          setTimeout(function() {
-            containerEl.style.opacity = '0.5';
-          }, 5000);
-          return;
-        }
-
-        if (diff > 0) {
-          var hours = Math.floor(diff / (1000 * 60 * 60));
-          var mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          var secs = Math.floor((diff % (1000 * 60)) / 1000);
-
-          // Format with leading zeros
-          var hh = hours.toString().padStart(2, '0');
-          var mm = mins.toString().padStart(2, '0');
-          var ss = secs.toString().padStart(2, '0');
-
-          timerEl.textContent = hh + ':' + mm + ':' + ss;
-        }
-      }
-
-      // Initial update
-      updateCountdown();
-
-      // Update every second
-      setInterval(updateCountdown, 1000);
-    })();
   </script>
 </body>
 
